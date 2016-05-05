@@ -1,0 +1,25 @@
+<RCC>
+    <qresource prefix="/image">
+        <file>img/bg_exit.png</file>
+        <file>img/bg_pause.png</file>
+        <file>img/bg_play.png</file>
+        <file>img/bg_start.png</file>
+        <file>img/bg_start_ori.jpg</file>
+        <file>img/btn_back.png</file>
+        <file>img/btn_conti.png</file>
+        <file>img/btn_exit.png</file>
+        <file>img/btn_face.png</file>
+        <file>img/btn_no.png</file>
+        <file>img/btn_pause.png</file>
+        <file>img/btn_retry.png</file>
+        <file>img/btn_start.png</file>
+        <file>img/btn_yes.png</file>
+        <file>img/hit_b.png</file>
+        <file>img/hit_r.png</file>
+        <file>img/icon.png</file>
+    </qresource>
+    <qresource prefix="/sound">
+        <file>sound/click.wav</file>
+        <file>sound/meow.wav</file>
+    </qresource>
+</RCC>
