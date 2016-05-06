@@ -113,6 +113,10 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         else if(event->scenePos().x() > btn_conti->pos().x() && event->scenePos().x() <= btn_conti->pos().x()+btn_conti_w && event->scenePos().y() > btn_conti->pos().y() && event->scenePos().y() <= btn_conti->pos().y()+btn_conti_h)
         {
             click->play();
+            //countDown->stop();
+            //countDown->start();
+            //bgChange("play");
+            //screenMode = "play";
 
         }
         if(event->scenePos().x() > btn_retry->pos().x() && event->scenePos().x() <= btn_retry->pos().x()+btn_conti_w && event->scenePos().y() > btn_retry->pos().y() && event->scenePos().y() <= btn_retry->pos().y()+btn_conti_h)
@@ -123,7 +127,7 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         }
     }
 }
-void Scene::bgChange(string mode)
+void Scene::bgChange(QString mode)
 {
     if(mode == "start")
     {
@@ -135,7 +139,7 @@ void Scene::bgChange(string mode)
         btn_start = new Btn();
         QPixmap start;
         start.load(":image/img/btn_start.png");
-        start = start.scaled(start.width(),start.height(),Qt::KeepAspectRatio);
+        //start = start.scaled(start.width(),start.height(),Qt::KeepAspectRatio);
         btn_w = start.width();
         btn_h = start.height();
         btn_start->setPixmap(start);
@@ -153,11 +157,11 @@ void Scene::bgChange(string mode)
         btn_face = new Btn();
         QPixmap face;
         face.load(":image/img/btn_face.png");
-        face = face.scaled(face.width()*11/18,face.height()*11/18,Qt::KeepAspectRatio);
+        face = face.scaled(face.width(),face.height(),Qt::KeepAspectRatio);
         btn_face_w = face.width();
         btn_face_h = face.height();
         btn_face->setPixmap(face);
-        btn_face->setPos(330,110);
+        btn_face->setPos(312,103);
         addItem(btn_face);
         face_count = 0;
         //pause_count = 0;
@@ -170,12 +174,13 @@ void Scene::bgChange(string mode)
         bgChange("start");
     }
     else if(mode == "restart_from_pause")
-        {
-            removeItem(btn_back);
-            removeItem(btn_conti);
-            removeItem(btn_retry);
-            bgChange("start");
-        }
+    {
+        removeItem(btn_back);
+        removeItem(btn_conti);
+        removeItem(btn_retry);
+        //timeDisplay->clear();
+        bgChange("start");
+    }
     else if(mode == "play")
     {
         QImage bg;
@@ -183,6 +188,7 @@ void Scene::bgChange(string mode)
         //bg = bg.scaled(870,537);
         this->setBackgroundBrush(bg);
         /* second , remove btn - start and change ball */
+
         removeItem(btn_start);
         removeItem(btn_exit);
         removeItem(btn_face);
@@ -197,7 +203,7 @@ void Scene::bgChange(string mode)
         btn_pause_w = pause.width();
         btn_pause_h = pause.height();
         btn_pause->setPixmap(pause);
-        btn_pause->setPos(40,450);
+        btn_pause->setPos(20,470);
         addItem(btn_pause);
         pause_count = 0;
 
@@ -233,6 +239,8 @@ void Scene::bgChange(string mode)
     }
     else if(mode == "pause")
     {
+        countDown->stop();//暫停倒數
+
         removeItem(btn_pause);
         QImage bg;
         bg.load(":image/img/bg_pause.png");
@@ -268,9 +276,56 @@ void Scene::bgChange(string mode)
 }
 void Scene::gameInit()
 {
+    time_count = 30;
     lowerBound = 450+50; // 50 is the bias (every picture's have it's original boundary)
     // Set up timer to control each item
     timer = new QTimer(this);
     connect(timer , SIGNAL(timeout()) , this , SLOT(advance()));
+    connect(timer , SIGNAL(timeout()) , this , SLOT(takeHitAway()));
     timer->start(10);//每0.01秒觸發一次，越小越流暢
+    countDown = new QTimer(this);
+    connect(countDown , SIGNAL(timeout()) , this , SLOT(displayCountDown()));
+    countDown->start(1000);
+    hitAppear = new QTimer(this);
+    connect(hitAppear , SIGNAL(timeout()) , this , SLOT(displayHitAppear()));
+    hitAppear->start(1000);
+}
+
+void Scene::takeHitAway()
+{
+
+}
+void Scene::displayCountDown()
+{
+    QLabel *timeDisplay = new QLabel();
+    //timeDisplay = new QLabel();
+
+    QFont time_font = (timeDisplay->font());
+    //time_font.setFamily("adobe-courier");
+    time_font.setFamily("Noto Sans T Chinese Bold");
+    time_font.setPointSize(16);
+    time_font.setBold(true);
+    QString tmp = "<FONT COLOR='#000000'>";
+    tmp.append(QString::number(time_count));
+    timeDisplay->setAlignment(Qt::AlignCenter);//置中
+    timeDisplay->setText(" 剩下時間 : "+tmp+" 秒");
+    //timeDisplay->setText("剩下時間 : "+QString::number(time_count));
+    timeDisplay->setFont(time_font);
+    timeDisplay->setStyleSheet("background-color: #ffffff;");
+    timeDisplay->setGeometry(QRect(100,50,160,30));
+    time_count--;
+    //cout<<time_count<<endl;
+    addWidget(timeDisplay);
+    if(time_count < 5)
+    {
+        timeDisplay->setStyleSheet("background-color: #ff0000;");
+    }
+    if(time_count < 0)
+    {
+        countDown->stop();
+    }
+}
+void Scene::displayHitAppear()
+{
+
 }
