@@ -70,9 +70,9 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         {
             //cout<< "no exit"<< endl;
             click->play();
-            screenMode = "restart";
+            screenMode = "start";
             //cout<<screenMode<<endl;
-            bgChange("start");
+            bgChange("restart_from_exit");
         }
         if((event->scenePos().x() >= btn_yes->pos().x() && event->scenePos().x() <= btn_yes->pos().x()+btn_yes_w) && (event->scenePos().y() >= btn_yes->pos().y() && event->scenePos().y() <= btn_yes->pos().y()+btn_yes_h))
         {
@@ -107,7 +107,7 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         if(event->scenePos().x() > btn_back->pos().x() && event->scenePos().x() <= btn_back->pos().x()+btn_conti_w && event->scenePos().y() > btn_back->pos().y() && event->scenePos().y() <= btn_back->pos().y()+btn_conti_h)
         {
             click->play();
-            bgChange("start");
+            bgChange("restart_from_pause");
             screenMode = "start";
         }
         else if(event->scenePos().x() > btn_conti->pos().x() && event->scenePos().x() <= btn_conti->pos().x()+btn_conti_w && event->scenePos().y() > btn_conti->pos().y() && event->scenePos().y() <= btn_conti->pos().y()+btn_conti_h)
@@ -129,25 +129,25 @@ void Scene::bgChange(string mode)
     {
         QImage bg;
         bg.load(":image/img/bg_start.png");
-        bg = bg.scaled(870,550);
+        //bg = bg.scaled(870,550);
         setBackgroundBrush(bg);
         // start
         btn_start = new Btn();
         QPixmap start;
         start.load(":image/img/btn_start.png");
-        start = start.scaled(start.width()*3/5,start.height()*3/5,Qt::KeepAspectRatio);
+        start = start.scaled(start.width(),start.height(),Qt::KeepAspectRatio);
         btn_w = start.width();
         btn_h = start.height();
         btn_start->setPixmap(start);
-        btn_start->setPos(700,320);
+        btn_start->setPos(680,310);
         addItem(btn_start);
         // exit
         btn_exit = new Btn();
         QPixmap exit;
         exit.load(":image/img/btn_exit.png");
-        exit = exit.scaled(exit.width()*3/5,exit.height()*3/5,Qt::KeepAspectRatio);
+        exit = exit.scaled(exit.width(),exit.height(),Qt::KeepAspectRatio);
         btn_exit->setPixmap(exit);
-        btn_exit->setPos(700,390);
+        btn_exit->setPos(680,390);
         addItem(btn_exit);
         // face
         btn_face = new Btn();
@@ -163,54 +163,24 @@ void Scene::bgChange(string mode)
         //pause_count = 0;
         face_check = false;
     }
-    if(mode == "restart")
+    else if(mode == "restart_from_exit")
     {
-        removeItem(btn_back);
-        removeItem(btn_conti);
-        removeItem(btn_retry);
         removeItem(btn_yes);
         removeItem(btn_no);
-        QImage bg;
-        bg.load(":image/img/bg_start.png");
-        bg = bg.scaled(870,550);
-        setBackgroundBrush(bg);
-        // start
-        btn_start = new Btn();
-        QPixmap start;
-        start.load(":image/img/btn_start.png");
-        start = start.scaled(start.width()*3/5,start.height()*3/5,Qt::KeepAspectRatio);
-        btn_w = start.width();
-        btn_h = start.height();
-        btn_start->setPixmap(start);
-        btn_start->setPos(700,320);
-        addItem(btn_start);
-        // exit
-        btn_exit = new Btn();
-        QPixmap exit;
-        exit.load(":image/img/btn_exit.png");
-        exit = exit.scaled(exit.width()*3/5,exit.height()*3/5,Qt::KeepAspectRatio);
-        btn_exit->setPixmap(exit);
-        btn_exit->setPos(700,390);
-        addItem(btn_exit);
-        // face
-        btn_face = new Btn();
-        QPixmap face;
-        face.load(":image/img/btn_face.png");
-        face = face.scaled(face.width()*11/18,face.height()*11/18,Qt::KeepAspectRatio);
-        btn_face_w = face.width();
-        btn_face_h = face.height();
-        btn_face->setPixmap(face);
-        btn_face->setPos(330,110);
-        addItem(btn_face);
-        face_count = 0;
-        //pause_count = 0;
-        face_check = false;
+        bgChange("start");
     }
+    else if(mode == "restart_from_pause")
+        {
+            removeItem(btn_back);
+            removeItem(btn_conti);
+            removeItem(btn_retry);
+            bgChange("start");
+        }
     else if(mode == "play")
     {
         QImage bg;
         bg.load(":image/img/bg_play.png");
-        bg = bg.scaled(870,550);
+        //bg = bg.scaled(870,537);
         this->setBackgroundBrush(bg);
         /* second , remove btn - start and change ball */
         removeItem(btn_start);
@@ -237,7 +207,7 @@ void Scene::bgChange(string mode)
     {
         QImage bg;
         bg.load(":image/img/bg_exit.png");
-        bg = bg.scaled(870,550);
+        //bg = bg.scaled(870,550);
         this->setBackgroundBrush(bg);
         /* second , remove btn - start and change ball */
         this->removeItem(btn_start);
@@ -247,18 +217,18 @@ void Scene::bgChange(string mode)
         btn_yes = new Btn();
         QPixmap yes;
         yes.load(":image/img/btn_yes.png");
-        yes = yes.scaled(yes.width()*1/5,yes.height()*1/5,Qt::KeepAspectRatio);
+        yes = yes.scaled(yes.width(),yes.height(),Qt::KeepAspectRatio);
         btn_yes_w = yes.width();
         btn_yes_h = yes.height();
         btn_yes->setPixmap(yes);
-        btn_yes->setPos(320,280);
+        btn_yes->setPos(320,260);
         addItem(btn_yes);
         btn_no = new Btn();
         QPixmap no;
         no.load(":image/img/btn_no.png");
-        no = no.scaled(no.width()*1/5,no.height()*1/5,Qt::KeepAspectRatio);
+        no = no.scaled(no.width(),no.height(),Qt::KeepAspectRatio);
         btn_no->setPixmap(no);
-        btn_no->setPos(480,280);
+        btn_no->setPos(480,260);
         addItem(btn_no);
     }
     else if(mode == "pause")
@@ -266,13 +236,13 @@ void Scene::bgChange(string mode)
         removeItem(btn_pause);
         QImage bg;
         bg.load(":image/img/bg_pause.png");
-        bg = bg.scaled(870,550);
+        //bg = bg.scaled(870,550);
         this->setBackgroundBrush(bg);
         //continue
         btn_conti = new Btn();
         QPixmap conti;
         conti.load(":image/img/btn_conti.png");
-        conti = conti.scaled(conti.width()*1/4,conti.height()*1/4,Qt::KeepAspectRatio);
+        conti = conti.scaled(conti.width(),conti.height(),Qt::KeepAspectRatio);
         btn_conti_w = conti.width();
         btn_conti_h = conti.height();
         btn_conti->setPixmap(conti);
@@ -282,7 +252,7 @@ void Scene::bgChange(string mode)
         btn_retry = new Btn();
         QPixmap retry;
         retry.load(":image/img/btn_retry.png");
-        retry = retry.scaled(retry.width()*1/4,retry.height()*1/4,Qt::KeepAspectRatio);
+        retry = retry.scaled(retry.width(),retry.height(),Qt::KeepAspectRatio);
         btn_retry->setPixmap(retry);
         btn_retry->setPos(390,280);
         addItem(btn_retry);
@@ -290,7 +260,7 @@ void Scene::bgChange(string mode)
         btn_back = new Btn();
         QPixmap back;
         back.load(":image/img/btn_back.png");
-        back = back.scaled(back.width()*1/4,back.height()*1/4,Qt::KeepAspectRatio);
+        back = back.scaled(back.width(),back.height(),Qt::KeepAspectRatio);
         btn_back->setPixmap(back);
         btn_back->setPos(500,280);
         addItem(btn_back);

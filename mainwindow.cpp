@@ -7,8 +7,14 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     scene = new Scene();
+    //禁止視窗放大
+    Qt::WindowFlags flags = 0;
+    flags |= Qt::WindowMinimizeButtonHint;
+    flags |= Qt::WindowCloseButtonHint;
+    setWindowFlags(flags);
+
     ui->graphicsView->setScene(scene);
-    scene->setSceneRect(10,0,840,540);
+    scene->setSceneRect(10,0,850,540);//數字越大向...移動(左,上,左,上)
     settingBg(10,630);
     ui->graphicsView->show();
 }
