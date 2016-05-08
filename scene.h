@@ -9,8 +9,10 @@
 #include <QSound>
 #include <QTimer>
 #include <QTime>//for waiting
+#include <time.h>//for qsrand
 #include "btn.h"
 #include "num.h"
+#include "hit.h"
 
 class Scene : public QGraphicsScene
 {
@@ -23,8 +25,9 @@ public:
     void gameInit(); // Start the game page
     //void hitMove();
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void initAllNumItems();
     void removeAllNumItems();
-
+    void moveAllHit();
     /* Variable */
     //start
     Btn *btn_start;
@@ -42,7 +45,12 @@ public:
     int pause_count;
     int btn_pause_w;
     int btn_pause_h;
-    int time_count;    
+    int time_count;
+    Hit *hit_r;
+    Hit *hit_b;
+    int order[100];
+    int hit_count;
+    QList<Hit *> list;
 
     //exit
     Btn *btn_yes;
@@ -80,7 +88,8 @@ public:
     QSound *meow;
 
     // For timer
-    QTimer *timer;
+    QTimer *run;
+    QTimer *check;
     QTimer *countDown;
     QTimer *hitAppear;
 
@@ -88,6 +97,7 @@ public:
     QString screenMode;
 
     // For scene boundary
+    int hitBound;
     int upperBound;
     int lowerBound;
     int leftBound;

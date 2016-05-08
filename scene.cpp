@@ -15,6 +15,7 @@ void Scene::Init(int x_start)
     leftBound = x_start;
     rightBound = x_start+370;
     upperBound = 50;
+    hitBound = x_start+120;
 }
 void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
@@ -26,9 +27,13 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             //cout<< "Start Game"<< endl;
             //bgm->stop();
             click->play();
+            removeItem(btn_start);
+            removeItem(btn_exit);
+            removeItem(btn_face);
             bgChange("play");
             // Goto setting the game initial
             screenMode = "play";
+            gameInit();
         }
         // or click on exit
         else if((event->scenePos().x() >= btn_exit->pos().x() && event->scenePos().x() <= btn_exit->pos().x()+btn_w) && (event->scenePos().y() >= btn_exit->pos().y() && event->scenePos().y() <= btn_exit->pos().y()+btn_h))
@@ -88,7 +93,6 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     else if(screenMode == "play")
     {
         // Starting Page
-
         if(event->scenePos().x() > btn_pause->pos().x() && event->scenePos().x() <= btn_pause->pos().x()+btn_pause_w && event->scenePos().y() > btn_pause->pos().y() && event->scenePos().y() <= btn_pause->pos().y()+btn_pause_h)
         {
             click->play();
@@ -99,7 +103,6 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                 bgChange("pause");
             }
         }
-        // Starting Page setting - shooting point
     }
     else if(screenMode == "pause")
     {
@@ -118,9 +121,18 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         if(event->scenePos().x() > btn_retry->pos().x() && event->scenePos().x() <= btn_retry->pos().x()+btn_conti_w && event->scenePos().y() > btn_retry->pos().y() && event->scenePos().y() <= btn_retry->pos().y()+btn_conti_h)
         {
             click->play();
+            foreach (Hit *i , list)
+            {
+                this->removeItem(i);
+                list.removeOne(i);
+            }
+            removeItem(btn_back);
+            removeItem(btn_conti);
+            removeItem(btn_retry);
             removeAllNumItems();
             bgChange("play");
             screenMode = "play";
+            gameInit();
         }
     }
 }
@@ -175,23 +187,28 @@ void Scene::bgChange(QString mode)
         removeItem(btn_back);
         removeItem(btn_conti);
         removeItem(btn_retry);
-        //timeDisplay->clear();
+
+        foreach (Hit *i , list)
+        {
+            this->removeItem(i);
+            list.removeOne(i);
+        }
         bgChange("start");
     }
     else if(mode == "play")
     {
-        QImage bg;
-        bg.load(":image/img/bg_play.png");
-        //bg = bg.scaled(870,537);
-        this->setBackgroundBrush(bg);
-        /* second , remove btn - start and change ball */
-
-        removeItem(btn_start);
+        /*removeItem(btn_start);
         removeItem(btn_exit);
         removeItem(btn_face);
         removeItem(btn_back);
         removeItem(btn_conti);
-        removeItem(btn_retry);
+        removeItem(btn_retry);*/
+
+        QImage bg;
+        bg.load(":image/img/bg_play.png");
+        //bg = bg.scaled(870,537);
+        this->setBackgroundBrush(bg);
+
         btn_pause = new Btn();
         QPixmap pause;
         pause.load(":image/img/btn_pause.png");
@@ -203,63 +220,13 @@ void Scene::bgChange(QString mode)
         addItem(btn_pause);
         pause_count = 0;
 
-        num_0 = new Num();
-        QPixmap n_0;
-        n_0.load(":image/img/num_0.png");
-        num_0->setPixmap(n_0);
-        num_1 = new Num();
-        QPixmap n_1;
-        n_1.load(":image/img/num_1.png");
-        num_1->setPixmap(n_1);
-        num_2 = new Num();
-        QPixmap n_2;
-        n_2.load(":image/img/num_2.png");
-        num_2->setPixmap(n_2);
-        num_3 = new Num();
-        QPixmap n_3;
-        n_3.load(":image/img/num_3.png");
-        num_3->setPixmap(n_3);
-        num_4 = new Num();
-        QPixmap n_4;
-        n_4.load(":image/img/num_4.png");
-        num_4->setPixmap(n_4);
-        num_5 = new Num();
-        QPixmap n_5;
-        n_5.load(":image/img/num_5.png");
-        num_5->setPixmap(n_5);
-        num_6 = new Num();
-        QPixmap n_6;
-        n_6.load(":image/img/num_6.png");
-        num_6->setPixmap(n_6);
-        num_7 = new Num();
-        QPixmap n_7;
-        n_7.load(":image/img/num_7.png");
-        num_7->setPixmap(n_7);
-        num_8 = new Num();
-        QPixmap n_8;
-        n_8.load(":image/img/num_8.png");
-        num_8->setPixmap(n_8);
-        num_9 = new Num();
-        QPixmap n_9;
-        n_9.load(":image/img/num_9.png");
-        num_9->setPixmap(n_9);
-        num_00 = new Num();
-        num_00->setPixmap(n_0);
-        num_10 = new Num();
-        num_10->setPixmap(n_1);
-        num_20 = new Num();
-        num_20->setPixmap(n_2);
-        num_30 = new Num();
-        num_30->setPixmap(n_3);
-
+        initAllNumItems();
         head_timeRemain = new Num();
         QPixmap h_t;
         h_t.load(":image/img/head_timeRemain.png");
         head_timeRemain->setPixmap(h_t);
-        head_timeRemain->setPos(40,38);
+        head_timeRemain->setPos(40,39);
         addItem(head_timeRemain);
-
-        gameInit();
     }
     else if(mode == "exit")
     {
@@ -292,6 +259,8 @@ void Scene::bgChange(QString mode)
     else if(mode == "pause")
     {
         countDown->stop();//暫停倒數
+        run->stop();
+        hitAppear->stop();
 
         removeItem(btn_pause);
         QImage bg;
@@ -328,15 +297,23 @@ void Scene::bgChange(QString mode)
 }
 void Scene::gameInit()
 {
+
+    qsrand(time(NULL));
+    for(int i=0;i<100;i++)
+    {
+        order[i]=qrand()%3;
+    }
     time_count = 30;
+    hit_count = 0;
     lowerBound = 450+50; // 50 is the bias (every picture's have it's original boundary)
     // Set up timer to control each item
-    timer = new QTimer(this);
-    connect(timer , SIGNAL(timeout()) , this , SLOT(advance()));
-    connect(timer , SIGNAL(timeout()) , this , SLOT(takeHitAway()));
-    timer->start(10);//每0.01秒觸發一次，越小越流暢
+    run = new QTimer(this);
+    connect(run , SIGNAL(timeout()) , this , SLOT(advance()));
+    run->start(1);
+    check = new QTimer(this);
+    connect(check , SIGNAL(timeout()) , this , SLOT(takeHitAway()));
+    check->start(1);//每0.001秒觸發一次，越小越流暢
     countDown = new QTimer(this);
-    //timeDisplay = new QLabel();
     connect(countDown , SIGNAL(timeout()) , this , SLOT(displayCountDown()));
     countDown->start(1000);
     hitAppear = new QTimer(this);
@@ -346,12 +323,19 @@ void Scene::gameInit()
 
 void Scene::takeHitAway()
 {
-
+    foreach(Hit *i , list)
+    {
+        if(i->pos().x() <= hitBound)
+        {
+            removeItem(i);
+            list.removeOne(i);
+        }
+    }
 }
 
 void Scene::displayCountDown()
 {
-    switch (time_count/10) {
+    switch (time_count/10) {//十位數
     case 0:
         removeItem(num_10);
         num_00->setPos(185,40);
@@ -374,7 +358,7 @@ void Scene::displayCountDown()
     default:
         break;
     }
-    switch (time_count%10) {
+    switch (time_count%10) {//個位數
     case 0:
         removeItem(num_1);
         num_0->setPos(205,40);
@@ -432,8 +416,84 @@ void Scene::displayCountDown()
 }
 void Scene::displayHitAppear()
 {
+    if(order[hit_count] == 0)
+    {
 
+    }
+    else if(order[hit_count] == 1)
+    {
+        hit_r = new Hit();
+        QPixmap H_r;
+        H_r.load(":image/img/hit_r.png");
+        hit_r->setPixmap(H_r);
+        hit_r->setPos(770,153);
+        addItem(hit_r);
+        list.push_back(hit_r);
+    }
+    else if(order[hit_count] == 2)
+    {
+        hit_b = new Hit();
+        QPixmap H_b;
+        H_b.load(":image/img/hit_b.png");
+        hit_b->setPixmap(H_b);
+        hit_b->setPos(770,153);
+        addItem(hit_b);
+        list.push_back(hit_b);
+    }
+    hit_count++;
 }
+void Scene::initAllNumItems()
+{
+    num_0 = new Num();
+    QPixmap n_0;
+    n_0.load(":image/img/num_0.png");
+    num_0->setPixmap(n_0);
+    num_1 = new Num();
+    QPixmap n_1;
+    n_1.load(":image/img/num_1.png");
+    num_1->setPixmap(n_1);
+    num_2 = new Num();
+    QPixmap n_2;
+    n_2.load(":image/img/num_2.png");
+    num_2->setPixmap(n_2);
+    num_3 = new Num();
+    QPixmap n_3;
+    n_3.load(":image/img/num_3.png");
+    num_3->setPixmap(n_3);
+    num_4 = new Num();
+    QPixmap n_4;
+    n_4.load(":image/img/num_4.png");
+    num_4->setPixmap(n_4);
+    num_5 = new Num();
+    QPixmap n_5;
+    n_5.load(":image/img/num_5.png");
+    num_5->setPixmap(n_5);
+    num_6 = new Num();
+    QPixmap n_6;
+    n_6.load(":image/img/num_6.png");
+    num_6->setPixmap(n_6);
+    num_7 = new Num();
+    QPixmap n_7;
+    n_7.load(":image/img/num_7.png");
+    num_7->setPixmap(n_7);
+    num_8 = new Num();
+    QPixmap n_8;
+    n_8.load(":image/img/num_8.png");
+    num_8->setPixmap(n_8);
+    num_9 = new Num();
+    QPixmap n_9;
+    n_9.load(":image/img/num_9.png");
+    num_9->setPixmap(n_9);
+    num_00 = new Num();
+    num_00->setPixmap(n_0);
+    num_10 = new Num();
+    num_10->setPixmap(n_1);
+    num_20 = new Num();
+    num_20->setPixmap(n_2);
+    num_30 = new Num();
+    num_30->setPixmap(n_3);
+}
+
 void Scene::removeAllNumItems()
 {
     removeItem(head_timeRemain);
