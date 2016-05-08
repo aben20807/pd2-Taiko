@@ -3,8 +3,7 @@
 
 #include <QMainWindow>
 #include <QGraphicsScene>
-#include <QLabel>
-#include <scene.h>
+#include "scene.h"
 namespace Ui {
 class MainWindow;
 }
@@ -14,12 +13,12 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    //friend class Scene;
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
     Scene *scene;
     void settingBg(int x_start , int y_end);
-
 private:
     Ui::MainWindow *ui;
 };

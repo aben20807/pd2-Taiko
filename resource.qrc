@@ -17,6 +17,17 @@
         <file>img/hit_b.png</file>
         <file>img/hit_r.png</file>
         <file>img/icon.png</file>
+        <file>img/num_0.png</file>
+        <file>img/num_1.png</file>
+        <file>img/num_2.png</file>
+        <file>img/num_3.png</file>
+        <file>img/num_4.png</file>
+        <file>img/num_5.png</file>
+        <file>img/num_6.png</file>
+        <file>img/num_7.png</file>
+        <file>img/num_8.png</file>
+        <file>img/num_9.png</file>
+        <file>img/head_timeRemain.png</file>
     </qresource>
     <qresource prefix="/sound">
         <file>sound/click.wav</file>

@@ -62,7 +62,6 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                 cout<<"bonus_start"<<endl;
             }
         }
-        else;
     }
     else if(screenMode == "exit")
     {
@@ -89,9 +88,9 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     else if(screenMode == "play")
     {
         // Starting Page
+
         if(event->scenePos().x() > btn_pause->pos().x() && event->scenePos().x() <= btn_pause->pos().x()+btn_pause_w && event->scenePos().y() > btn_pause->pos().y() && event->scenePos().y() <= btn_pause->pos().y()+btn_pause_h)
         {
-
             click->play();
             pause_count++;
             if(pause_count > 1)
@@ -107,21 +106,19 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         if(event->scenePos().x() > btn_back->pos().x() && event->scenePos().x() <= btn_back->pos().x()+btn_conti_w && event->scenePos().y() > btn_back->pos().y() && event->scenePos().y() <= btn_back->pos().y()+btn_conti_h)
         {
             click->play();
+            removeAllNumItems();
             bgChange("restart_from_pause");
             screenMode = "start";
         }
         else if(event->scenePos().x() > btn_conti->pos().x() && event->scenePos().x() <= btn_conti->pos().x()+btn_conti_w && event->scenePos().y() > btn_conti->pos().y() && event->scenePos().y() <= btn_conti->pos().y()+btn_conti_h)
         {
             click->play();
-            //countDown->stop();
-            //countDown->start();
-            //bgChange("play");
-            //screenMode = "play";
-
+            countDown->stop();
         }
         if(event->scenePos().x() > btn_retry->pos().x() && event->scenePos().x() <= btn_retry->pos().x()+btn_conti_w && event->scenePos().y() > btn_retry->pos().y() && event->scenePos().y() <= btn_retry->pos().y()+btn_conti_h)
         {
             click->play();
+            removeAllNumItems();
             bgChange("play");
             screenMode = "play";
         }
@@ -195,7 +192,6 @@ void Scene::bgChange(QString mode)
         removeItem(btn_back);
         removeItem(btn_conti);
         removeItem(btn_retry);
-
         btn_pause = new Btn();
         QPixmap pause;
         pause.load(":image/img/btn_pause.png");
@@ -206,6 +202,62 @@ void Scene::bgChange(QString mode)
         btn_pause->setPos(20,470);
         addItem(btn_pause);
         pause_count = 0;
+
+        num_0 = new Num();
+        QPixmap n_0;
+        n_0.load(":image/img/num_0.png");
+        num_0->setPixmap(n_0);
+        num_1 = new Num();
+        QPixmap n_1;
+        n_1.load(":image/img/num_1.png");
+        num_1->setPixmap(n_1);
+        num_2 = new Num();
+        QPixmap n_2;
+        n_2.load(":image/img/num_2.png");
+        num_2->setPixmap(n_2);
+        num_3 = new Num();
+        QPixmap n_3;
+        n_3.load(":image/img/num_3.png");
+        num_3->setPixmap(n_3);
+        num_4 = new Num();
+        QPixmap n_4;
+        n_4.load(":image/img/num_4.png");
+        num_4->setPixmap(n_4);
+        num_5 = new Num();
+        QPixmap n_5;
+        n_5.load(":image/img/num_5.png");
+        num_5->setPixmap(n_5);
+        num_6 = new Num();
+        QPixmap n_6;
+        n_6.load(":image/img/num_6.png");
+        num_6->setPixmap(n_6);
+        num_7 = new Num();
+        QPixmap n_7;
+        n_7.load(":image/img/num_7.png");
+        num_7->setPixmap(n_7);
+        num_8 = new Num();
+        QPixmap n_8;
+        n_8.load(":image/img/num_8.png");
+        num_8->setPixmap(n_8);
+        num_9 = new Num();
+        QPixmap n_9;
+        n_9.load(":image/img/num_9.png");
+        num_9->setPixmap(n_9);
+        num_00 = new Num();
+        num_00->setPixmap(n_0);
+        num_10 = new Num();
+        num_10->setPixmap(n_1);
+        num_20 = new Num();
+        num_20->setPixmap(n_2);
+        num_30 = new Num();
+        num_30->setPixmap(n_3);
+
+        head_timeRemain = new Num();
+        QPixmap h_t;
+        h_t.load(":image/img/head_timeRemain.png");
+        head_timeRemain->setPixmap(h_t);
+        head_timeRemain->setPos(40,38);
+        addItem(head_timeRemain);
 
         gameInit();
     }
@@ -284,6 +336,7 @@ void Scene::gameInit()
     connect(timer , SIGNAL(timeout()) , this , SLOT(takeHitAway()));
     timer->start(10);//每0.01秒觸發一次，越小越流暢
     countDown = new QTimer(this);
+    //timeDisplay = new QLabel();
     connect(countDown , SIGNAL(timeout()) , this , SLOT(displayCountDown()));
     countDown->start(1000);
     hitAppear = new QTimer(this);
@@ -295,37 +348,107 @@ void Scene::takeHitAway()
 {
 
 }
+
 void Scene::displayCountDown()
 {
-    QLabel *timeDisplay = new QLabel();
-    //timeDisplay = new QLabel();
-
-    QFont time_font = (timeDisplay->font());
-    //time_font.setFamily("adobe-courier");
-    time_font.setFamily("Noto Sans T Chinese Bold");
-    time_font.setPointSize(16);
-    time_font.setBold(true);
-    QString tmp = "<FONT COLOR='#000000'>";
-    tmp.append(QString::number(time_count));
-    timeDisplay->setAlignment(Qt::AlignCenter);//置中
-    timeDisplay->setText(" 剩下時間 : "+tmp+" 秒");
-    //timeDisplay->setText("剩下時間 : "+QString::number(time_count));
-    timeDisplay->setFont(time_font);
-    timeDisplay->setStyleSheet("background-color: #ffffff;");
-    timeDisplay->setGeometry(QRect(100,50,160,30));
+    switch (time_count/10) {
+    case 0:
+        removeItem(num_10);
+        num_00->setPos(185,40);
+        addItem(num_00);
+        break;
+    case 1:
+        removeItem(num_20);
+        num_10->setPos(185,40);
+        addItem(num_10);
+        break;
+    case 2:
+        removeItem(num_30);
+        num_20->setPos(185,40);
+        addItem(num_20);
+        break;
+    case 3:
+        num_30->setPos(185,40);
+        addItem(num_30);
+        break;
+    default:
+        break;
+    }
+    switch (time_count%10) {
+    case 0:
+        removeItem(num_1);
+        num_0->setPos(205,40);
+        addItem(num_0);
+        break;
+    case 1:
+        removeItem(num_2);
+        num_1->setPos(205,40);
+        addItem(num_1);
+        break;
+    case 2:
+        removeItem(num_3);
+        num_2->setPos(205,40);
+        addItem(num_2);
+        break;
+    case 3:
+        removeItem(num_4);
+        num_3->setPos(205,40);
+        addItem(num_3);
+        break;
+    case 4:
+        removeItem(num_5);
+        num_4->setPos(205,40);
+        addItem(num_4);
+        break;
+    case 5:
+        removeItem(num_6);
+        num_5->setPos(205,40);
+        addItem(num_5);
+        break;
+    case 6:
+        removeItem(num_7);
+        num_6->setPos(205,40);
+        addItem(num_6);
+        break;
+    case 7:
+        removeItem(num_8);
+        num_7->setPos(205,40);
+        addItem(num_7);
+        break;
+    case 8:
+        removeItem(num_9);
+        num_8->setPos(205,40);
+        addItem(num_8);
+        break;
+    case 9:
+        removeItem(num_0);
+        num_9->setPos(205,40);
+        addItem(num_9);
+        break;
+    default:
+        break;
+    }
     time_count--;
-    //cout<<time_count<<endl;
-    addWidget(timeDisplay);
-    if(time_count < 5)
-    {
-        timeDisplay->setStyleSheet("background-color: #ff0000;");
-    }
-    if(time_count < 0)
-    {
-        countDown->stop();
-    }
 }
 void Scene::displayHitAppear()
 {
 
+}
+void Scene::removeAllNumItems()
+{
+    removeItem(head_timeRemain);
+    removeItem(num_0);
+    removeItem(num_1);
+    removeItem(num_2);
+    removeItem(num_3);
+    removeItem(num_4);
+    removeItem(num_5);
+    removeItem(num_6);
+    removeItem(num_7);
+    removeItem(num_8);
+    removeItem(num_9);
+    removeItem(num_00);
+    removeItem(num_10);
+    removeItem(num_20);
+    removeItem(num_30);
 }

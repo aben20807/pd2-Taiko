@@ -9,10 +9,8 @@
 #include <QSound>
 #include <QTimer>
 #include <QTime>//for waiting
-#include <QLabel>
-#include <QListWidget>
 #include "btn.h"
-
+#include "num.h"
 
 class Scene : public QGraphicsScene
 {
@@ -25,6 +23,7 @@ public:
     void gameInit(); // Start the game page
     //void hitMove();
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void removeAllNumItems();
 
     /* Variable */
     //start
@@ -37,24 +36,43 @@ public:
     int btn_h;
     int btn_face_w;
     int btn_face_h;
+
     //play
     Btn *btn_pause;
     int pause_count;
     int btn_pause_w;
     int btn_pause_h;
-    int time_count;
-    //QLabel *timeDisplay;
+    int time_count;    
+
     //exit
     Btn *btn_yes;
     Btn *btn_no;
     int btn_yes_w;
     int btn_yes_h;
+
     //pause
     Btn *btn_conti;
     Btn *btn_back;
     Btn *btn_retry;
     int btn_conti_w;
     int btn_conti_h;
+
+    //For number
+    Num *head_timeRemain;
+    Num *num_00;
+    Num *num_10;
+    Num *num_20;
+    Num *num_30;
+    Num *num_0;
+    Num *num_1;
+    Num *num_2;
+    Num *num_3;
+    Num *num_4;
+    Num *num_5;
+    Num *num_6;
+    Num *num_7;
+    Num *num_8;
+    Num *num_9;
 
     // For sound
     QSound *bgm;
@@ -68,6 +86,7 @@ public:
 
     /* Use to control the scene page */
     QString screenMode;
+
     // For scene boundary
     int upperBound;
     int lowerBound;
