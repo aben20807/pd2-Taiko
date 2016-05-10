@@ -10,6 +10,7 @@
 #include <QTimer>
 #include <QTime>//for waiting
 #include <time.h>//for qsrand
+#include <QKeyEvent>//for key press
 #include "btn.h"
 #include "num.h"
 #include "hit.h"
@@ -25,6 +26,7 @@ public:
     void gameInit(); // Start the game page
     //void hitMove();
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void keyPressEvent(QKeyEvent *event);
     void initAllNumItems();
     void removeAllNumItems();
     void moveAllHit();
@@ -51,6 +53,10 @@ public:
     int order[100];
     int hit_count;
     QList<Hit *> list;
+    Num *drum_r_r;
+    Num *drum_r_l;
+    Num *drum_b_r;
+    Num *drum_b_l;
 
     //exit
     Btn *btn_yes;
@@ -86,6 +92,8 @@ public:
     QSound *bgm;
     QSound *click;
     QSound *meow;
+    QSound *drum_head;
+    QSound *drum_rim;
 
     // For timer
     QTimer *run;

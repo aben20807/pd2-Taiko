@@ -28,9 +28,15 @@
         <file>img/num_8.png</file>
         <file>img/num_9.png</file>
         <file>img/head_timeRemain.png</file>
+        <file>img/drum_red_left.png</file>
+        <file>img/drum_red_right.png</file>
+        <file>img/drum_blue_left.png</file>
+        <file>img/drum_blue_right.png</file>
     </qresource>
     <qresource prefix="/sound">
         <file>sound/click.wav</file>
         <file>sound/meow.wav</file>
+        <file>sound/drum_head.wav</file>
+        <file>sound/drum_rim.wav</file>
     </qresource>
 </RCC>

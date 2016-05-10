@@ -11,6 +11,8 @@ void Scene::Init(int x_start)
     //bgm->play();
     click = new QSound(":sound/sound/click.wav");
     meow = new QSound(":sound/sound/meow.wav");
+    drum_head = new QSound(":sound/sound/drum_head.wav");
+    drum_rim = new QSound(":sound/sound/drum_rim.wav");
     //  setting the boundary , only lowerBound has a little different
     leftBound = x_start;
     rightBound = x_start+370;
@@ -136,6 +138,64 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         }
     }
 }
+void Scene::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_J || event->key() == Qt::Key_F)
+    {
+        drum_head->play();
+        if(event->key() == Qt::Key_J)
+        {
+            addItem(drum_r_r);
+            QTime t;
+            t.start();
+            while(t.elapsed()<100)//等待0.1秒
+                QCoreApplication::processEvents();
+            removeItem(drum_r_r);
+        }
+        if(event->key() == Qt::Key_F)
+        {
+            addItem(drum_r_l);
+            QTime t;
+            t.start();
+            while(t.elapsed()<100)//等待0.1秒
+                QCoreApplication::processEvents();
+            removeItem(drum_r_l);
+        }
+    }
+    else if(event->key() == Qt::Key_K || event->key() == Qt::Key_D)
+    {
+        drum_rim->play();
+        if(event->key() == Qt::Key_K)
+        {
+            addItem(drum_b_r);
+            QTime t;
+            t.start();
+            while(t.elapsed()<100)//等待0.1秒
+                QCoreApplication::processEvents();
+            removeItem(drum_b_r);
+        }
+        if(event->key() == Qt::Key_D)
+        {
+            addItem(drum_b_l);
+            QTime t;
+            t.start();
+            while(t.elapsed()<100)//等待0.1秒
+                QCoreApplication::processEvents();
+            removeItem(drum_b_l);
+        }
+    }
+    else if(event->key() == Qt::Key_Escape)
+    {
+        click->play();
+        pause_count++;
+        if(pause_count > 1)
+        {
+            screenMode = "pause";
+            bgChange("pause");
+        }
+    }
+}
+
 void Scene::bgChange(QString mode)
 {
     if(mode == "start")
@@ -197,13 +257,6 @@ void Scene::bgChange(QString mode)
     }
     else if(mode == "play")
     {
-        /*removeItem(btn_start);
-        removeItem(btn_exit);
-        removeItem(btn_face);
-        removeItem(btn_back);
-        removeItem(btn_conti);
-        removeItem(btn_retry);*/
-
         QImage bg;
         bg.load(":image/img/bg_play.png");
         //bg = bg.scaled(870,537);
@@ -219,6 +272,27 @@ void Scene::bgChange(QString mode)
         btn_pause->setPos(20,470);
         addItem(btn_pause);
         pause_count = 0;
+
+        drum_r_r = new Num();
+        QPixmap drr;
+        drr.load(":image/img/drum_red_right.png");
+        drum_r_r->setPixmap(drr);
+        drum_r_r->setPos(70,145);
+        drum_r_l = new Num();
+        QPixmap drl;
+        drl.load(":image/img/drum_red_left.png");
+        drum_r_l->setPixmap(drl);
+        drum_r_l->setPos(30,145);
+        drum_b_r = new Num();
+        QPixmap dbr;
+        dbr.load(":image/img/drum_blue_right.png");
+        drum_b_r->setPixmap(dbr);
+        drum_b_r->setPos(70,130);
+        drum_b_l = new Num();
+        QPixmap dbl;
+        dbl.load(":image/img/drum_blue_left.png");
+        drum_b_l->setPixmap(dbl);
+        drum_b_l->setPos(17,130);
 
         initAllNumItems();
         head_timeRemain = new Num();
