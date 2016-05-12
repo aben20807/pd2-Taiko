@@ -3,6 +3,7 @@
 
 #include <QGraphicsPixmapItem>
 #include <QGraphicsSceneMouseEvent>
+#include <QGraphicsScene>
 
 class Hit : public QGraphicsPixmapItem
 {

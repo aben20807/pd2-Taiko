@@ -11,9 +11,13 @@
 #include <QTime>//for waiting
 #include <time.h>//for qsrand
 #include <QKeyEvent>//for key press
+#include <typeinfo>//for typeid
 #include "btn.h"
 #include "num.h"
 #include "hit.h"
+#include "other.h"
+#include "hitr.h"
+#include "hitb.h"
 
 class Scene : public QGraphicsScene
 {
@@ -30,6 +34,7 @@ public:
     void initAllNumItems();
     void removeAllNumItems();
     void moveAllHit();
+    void meshHit();
     /* Variable */
     //start
     Btn *btn_start;
@@ -48,16 +53,19 @@ public:
     int btn_pause_w;
     int btn_pause_h;
     int time_count;
-    Hit *hit_r;
+    HitR *hit_r;
     Hit *hit_b;
     int order[100];
     int hit_count;
     QList<Hit *> list;
-    Num *drum_r_r;
-    Num *drum_r_l;
-    Num *drum_b_r;
-    Num *drum_b_l;
-
+    Other *drum_r_r;
+    Other *drum_r_l;
+    Other *drum_b_r;
+    Other *drum_b_l;
+    Other *judge;
+    int judge_w;
+    int judge_h;
+    QList<QGraphicsItem *> hit_list;
     //exit
     Btn *btn_yes;
     Btn *btn_no;
@@ -72,7 +80,7 @@ public:
     int btn_conti_h;
 
     //For number
-    Num *head_timeRemain;
+    Other *head_timeRemain;
     Num *num_00;
     Num *num_10;
     Num *num_20;
@@ -100,6 +108,8 @@ public:
     QTimer *check;
     QTimer *countDown;
     QTimer *hitAppear;
+    QTimer *hitCheck;
+
 
     /* Use to control the scene page */
     QString screenMode;

@@ -108,19 +108,19 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     }
     else if(screenMode == "pause")
     {
-        if(event->scenePos().x() > btn_back->pos().x() && event->scenePos().x() <= btn_back->pos().x()+btn_conti_w && event->scenePos().y() > btn_back->pos().y() && event->scenePos().y() <= btn_back->pos().y()+btn_conti_h)
+        if(event->scenePos().x() >= btn_back->pos().x() && event->scenePos().x() <= btn_back->pos().x()+btn_conti_w && event->scenePos().y() >= btn_back->pos().y() && event->scenePos().y() <= btn_back->pos().y()+btn_conti_h)
         {
             click->play();
             removeAllNumItems();
             bgChange("restart_from_pause");
             screenMode = "start";
         }
-        else if(event->scenePos().x() > btn_conti->pos().x() && event->scenePos().x() <= btn_conti->pos().x()+btn_conti_w && event->scenePos().y() > btn_conti->pos().y() && event->scenePos().y() <= btn_conti->pos().y()+btn_conti_h)
+        else if(event->scenePos().x() >= btn_conti->pos().x() && event->scenePos().x() <= btn_conti->pos().x()+btn_conti_w && event->scenePos().y() >= btn_conti->pos().y() && event->scenePos().y() <= btn_conti->pos().y()+btn_conti_h)
         {
             click->play();
             countDown->stop();
         }
-        if(event->scenePos().x() > btn_retry->pos().x() && event->scenePos().x() <= btn_retry->pos().x()+btn_conti_w && event->scenePos().y() > btn_retry->pos().y() && event->scenePos().y() <= btn_retry->pos().y()+btn_conti_h)
+        if(event->scenePos().x() >= btn_retry->pos().x() && event->scenePos().x() <= btn_retry->pos().x()+btn_conti_w && event->scenePos().y() >= btn_retry->pos().y() && event->scenePos().y() <= btn_retry->pos().y()+btn_conti_h)
         {
             click->play();
             foreach (Hit *i , list)
@@ -142,6 +142,15 @@ void Scene::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_J || event->key() == Qt::Key_F)
     {
+        QList<QGraphicsItem *> hit_list = this->collidingItems(judge);
+        foreach (QGraphicsItem *i, hit_list)
+        {
+
+            HitR *item = dynamic_cast<HitR *>(i);
+            this->removeItem(item);
+            list.removeOne(item);
+            delete item;
+        }
         drum_head->play();
         if(event->key() == Qt::Key_J)
         {
@@ -164,9 +173,19 @@ void Scene::keyPressEvent(QKeyEvent *event)
     }
     else if(event->key() == Qt::Key_K || event->key() == Qt::Key_D)
     {
+        QList<QGraphicsItem *> hit_list = this->collidingItems(judge);
+        foreach (QGraphicsItem *i, hit_list)
+        {
+            HitB *item = dynamic_cast<HitB *>(i);
+            this->removeItem(item);
+            list.removeOne(item);
+            delete item;
+
+        }
         drum_rim->play();
         if(event->key() == Qt::Key_K)
         {
+
             addItem(drum_b_r);
             QTime t;
             t.start();
@@ -183,7 +202,7 @@ void Scene::keyPressEvent(QKeyEvent *event)
                 QCoreApplication::processEvents();
             removeItem(drum_b_l);
         }
-    }
+        }
     else if(event->key() == Qt::Key_Escape)
     {
         click->play();
@@ -273,29 +292,37 @@ void Scene::bgChange(QString mode)
         addItem(btn_pause);
         pause_count = 0;
 
-        drum_r_r = new Num();
+        drum_r_r = new Other();
         QPixmap drr;
         drr.load(":image/img/drum_red_right.png");
         drum_r_r->setPixmap(drr);
         drum_r_r->setPos(70,145);
-        drum_r_l = new Num();
+        drum_r_l = new Other();
         QPixmap drl;
         drl.load(":image/img/drum_red_left.png");
         drum_r_l->setPixmap(drl);
         drum_r_l->setPos(30,145);
-        drum_b_r = new Num();
+        drum_b_r = new Other();
         QPixmap dbr;
         dbr.load(":image/img/drum_blue_right.png");
         drum_b_r->setPixmap(dbr);
         drum_b_r->setPos(70,130);
-        drum_b_l = new Num();
+        drum_b_l = new Other();
         QPixmap dbl;
         dbl.load(":image/img/drum_blue_left.png");
         drum_b_l->setPixmap(dbl);
         drum_b_l->setPos(17,130);
+        judge = new Other();
+        QPixmap jud;
+        jud.load(":image/img/judge.png");
+        judge_w = jud.width();
+        judge_h = jud.height();
+        judge->setPixmap(jud);
+        judge->setPos(180,138);
+        addItem(judge);
 
         initAllNumItems();
-        head_timeRemain = new Num();
+        head_timeRemain = new Other();
         QPixmap h_t;
         h_t.load(":image/img/head_timeRemain.png");
         head_timeRemain->setPixmap(h_t);
@@ -369,6 +396,7 @@ void Scene::bgChange(QString mode)
         addItem(btn_back);
     }
 }
+
 void Scene::gameInit()
 {
 
@@ -403,6 +431,7 @@ void Scene::takeHitAway()
         {
             removeItem(i);
             list.removeOne(i);
+            delete i;
         }
     }
 }
@@ -488,6 +517,7 @@ void Scene::displayCountDown()
     }
     time_count--;
 }
+
 void Scene::displayHitAppear()
 {
     if(order[hit_count] == 0)
@@ -496,7 +526,7 @@ void Scene::displayHitAppear()
     }
     else if(order[hit_count] == 1)
     {
-        hit_r = new Hit();
+        hit_r = new HitR();
         QPixmap H_r;
         H_r.load(":image/img/hit_r.png");
         hit_r->setPixmap(H_r);
@@ -506,7 +536,7 @@ void Scene::displayHitAppear()
     }
     else if(order[hit_count] == 2)
     {
-        hit_b = new Hit();
+        hit_b = new HitB();
         QPixmap H_b;
         H_b.load(":image/img/hit_b.png");
         hit_b->setPixmap(H_b);
@@ -516,6 +546,7 @@ void Scene::displayHitAppear()
     }
     hit_count++;
 }
+
 void Scene::initAllNumItems()
 {
     num_0 = new Num();
@@ -586,3 +617,4 @@ void Scene::removeAllNumItems()
     removeItem(num_20);
     removeItem(num_30);
 }
+

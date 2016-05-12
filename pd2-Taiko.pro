@@ -17,13 +17,19 @@ SOURCES += main.cpp\
     scene.cpp \
     btn.cpp \
     hit.cpp \
-    num.cpp
+    num.cpp \
+    other.cpp \
+    hitr.cpp \
+    hitb.cpp
 
 HEADERS  += mainwindow.h \
     scene.h \
     btn.h \
     hit.h \
-    num.h
+    num.h \
+    other.h \
+    hitr.h \
+    hitb.h
 
 FORMS    += mainwindow.ui
 

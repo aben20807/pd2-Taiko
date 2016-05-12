@@ -1,0 +1,14 @@
+INPUT(
+./release\main.o
+./release\mainwindow.o
+./release\scene.o
+./release\btn.o
+./release\hit.o
+./release\num.o
+./release\other.o
+./release\hitr.o
+./release\hitb.o
+./release\qrc_resource.o
+./release\moc_mainwindow.o
+./release\moc_scene.o
+);

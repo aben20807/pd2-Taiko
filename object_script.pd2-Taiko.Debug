@@ -1,0 +1,14 @@
+INPUT(
+./debug\main.o
+./debug\mainwindow.o
+./debug\scene.o
+./debug\btn.o
+./debug\hit.o
+./debug\num.o
+./debug\other.o
+./debug\hitr.o
+./debug\hitb.o
+./debug\qrc_resource.o
+./debug\moc_mainwindow.o
+./debug\moc_scene.o
+);
