@@ -33,6 +33,8 @@
         <file>img/drum_blue_left.png</file>
         <file>img/drum_blue_right.png</file>
         <file>img/judge.png</file>
+        <file>img/bg_score.png</file>
+        <file>img/head_score.png</file>
     </qresource>
     <qresource prefix="/sound">
         <file>sound/click.wav</file>

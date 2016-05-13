@@ -32,7 +32,7 @@ public:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void initAllNumItems();
-    void removeAllNumItems();
+    void removeCountDownItems();
     void moveAllHit();
     void meshHit();
     /* Variable */
@@ -66,6 +66,8 @@ public:
     int judge_w;
     int judge_h;
     QList<QGraphicsItem *> hit_list;
+
+
     //exit
     Btn *btn_yes;
     Btn *btn_no;
@@ -81,6 +83,7 @@ public:
 
     //For number
     Other *head_timeRemain;
+    Other *head_score;
     Num *num_00;
     Num *num_10;
     Num *num_20;

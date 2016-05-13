@@ -101,20 +101,17 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             pause_count++;
             if(pause_count > 1)
             {
-
                 screenMode = "pause";
                 bgChange("pause");
-
             }
-
         }
     }
-    else if(screenMode == "pause")
+    else if(screenMode == "pause" || screenMode == "score")
     {
         if(event->scenePos().x() >= btn_back->pos().x() && event->scenePos().x() <= btn_back->pos().x()+btn_conti_w && event->scenePos().y() >= btn_back->pos().y() && event->scenePos().y() <= btn_back->pos().y()+btn_conti_h)
         {
             click->play();
-            removeAllNumItems();
+            removeCountDownItems();
             bgChange("restart_from_pause");
             screenMode = "start";
         }
@@ -134,7 +131,7 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             removeItem(btn_back);
             removeItem(btn_conti);
             removeItem(btn_retry);
-            removeAllNumItems();
+            removeCountDownItems();
             bgChange("play");
             screenMode = "play";
             gameInit();
@@ -216,6 +213,7 @@ void Scene::keyPressEvent(QKeyEvent *event)
             }
         }
     }
+
 }
 
 void Scene::bgChange(QString mode)
@@ -338,6 +336,13 @@ void Scene::bgChange(QString mode)
         head_timeRemain->setPixmap(h_t);
         head_timeRemain->setPos(40,39);
         addItem(head_timeRemain);
+
+        head_score = new Other();
+        QPixmap h_s;
+        h_s.load(":image/img/head_score.png");
+        head_score->setPixmap(h_s);
+        head_score->setPos(640,39);
+        addItem(head_score);
     }
     else if(mode == "exit")
     {
@@ -377,8 +382,15 @@ void Scene::bgChange(QString mode)
         removeItem(btn_pause);
         QImage bg;
         bg.load(":image/img/bg_pause.png");
-        //bg = bg.scaled(870,550);
         this->setBackgroundBrush(bg);
+        //retry
+        btn_retry = new Btn();
+        QPixmap retry;
+        retry.load(":image/img/btn_retry.png");
+        retry = retry.scaled(retry.width(),retry.height(),Qt::KeepAspectRatio);
+        btn_retry->setPixmap(retry);
+        btn_retry->setPos(280,360);
+        addItem(btn_retry);
         //continue
         btn_conti = new Btn();
         QPixmap conti;
@@ -387,23 +399,56 @@ void Scene::bgChange(QString mode)
         btn_conti_w = conti.width();
         btn_conti_h = conti.height();
         btn_conti->setPixmap(conti);
-        btn_conti->setPos(280,280);
-        addItem(btn_conti);
-        //retry
-        btn_retry = new Btn();
-        QPixmap retry;
-        retry.load(":image/img/btn_retry.png");
-        retry = retry.scaled(retry.width(),retry.height(),Qt::KeepAspectRatio);
-        btn_retry->setPixmap(retry);
-        btn_retry->setPos(390,280);
-        addItem(btn_retry);
+        btn_conti->setPos(390,360);
+        //addItem(btn_conti);
         //back
         btn_back = new Btn();
         QPixmap back;
         back.load(":image/img/btn_back.png");
         back = back.scaled(back.width(),back.height(),Qt::KeepAspectRatio);
         btn_back->setPixmap(back);
-        btn_back->setPos(500,280);
+        btn_back->setPos(500,360);
+        addItem(btn_back);
+    }
+    else if(mode == "score")
+    {
+        QImage bg;
+        bg.load(":/image/img/bg_score.png");
+        this->setBackgroundBrush(bg);
+        removeItem(head_score);
+        removeCountDownItems();
+        removeItem(judge);
+        removeItem(btn_pause);
+        foreach (Hit *i , list)
+        {
+            this->removeItem(i);
+            list.removeOne(i);
+        }
+        //retry
+        btn_retry = new Btn();
+        QPixmap retry;
+        retry.load(":image/img/btn_retry.png");
+        retry = retry.scaled(retry.width(),retry.height(),Qt::KeepAspectRatio);
+        btn_retry->setPixmap(retry);
+        btn_retry->setPos(280,360);
+        addItem(btn_retry);
+        //continue
+        btn_conti = new Btn();
+        QPixmap conti;
+        conti.load(":image/img/btn_conti.png");
+        conti = conti.scaled(conti.width(),conti.height(),Qt::KeepAspectRatio);
+        btn_conti_w = conti.width();
+        btn_conti_h = conti.height();
+        btn_conti->setPixmap(conti);
+        btn_conti->setPos(390,360);
+        //addItem(btn_conti);
+        //back
+        btn_back = new Btn();
+        QPixmap back;
+        back.load(":image/img/btn_back.png");
+        back = back.scaled(back.width(),back.height(),Qt::KeepAspectRatio);
+        btn_back->setPixmap(back);
+        btn_back->setPos(500,360);
         addItem(btn_back);
     }
 }
@@ -415,7 +460,7 @@ void Scene::gameInit()
     {
         order[i]=qrand()%5;
     }
-    time_count = 30;
+    time_count = 10;
     hit_count = 0;
     lowerBound = 450+50; // 50 is the bias (every picture's have it's original boundary)
     // Set up timer to control each item
@@ -532,8 +577,8 @@ void Scene::displayCountDown()
         run->stop();
         countDown->stop();
         hitAppear->stop();
-        //bgChange("score");
-        //screenMode = "score";
+        bgChange("score");
+        screenMode = "score";
     }
 }
 
@@ -618,7 +663,7 @@ void Scene::initAllNumItems()
     num_30->setPixmap(n_3);
 }
 
-void Scene::removeAllNumItems()
+void Scene::removeCountDownItems()
 {
     removeItem(head_timeRemain);
     removeItem(num_0);
