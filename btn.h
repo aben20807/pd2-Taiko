@@ -4,7 +4,6 @@
 #include <QGraphicsPixmapItem>
 #include <QGraphicsSceneMouseEvent>
 #include <iostream>
-
 using namespace std;
 
 class Btn : public QGraphicsPixmapItem

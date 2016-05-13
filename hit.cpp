@@ -7,9 +7,6 @@ Hit::Hit()
 }
 void Hit::advance(int phase)
 {
-    // Do moving
+    //移動
     this->setPos(this->pos().x()- x_speed , this->pos().y());
-    //cout<<x_speed<<" ";
-    // check the boundary
-    //checkBoundary();
 }

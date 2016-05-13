@@ -22,24 +22,22 @@
 class Scene : public QGraphicsScene
 {
     Q_OBJECT
+
 public:
     /* function */
     Scene(QObject *parent = 0);
     void Init(int x_start ); // For screen initialize
     void bgChange(QString mode);//變換各種背景
-    void gameInit(); // Start the game page
-    //void hitMove();
+    void gameInit(); //遊戲初始化
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
-    void initCountDownItems();
-    void removeCountDownItems();
-    void initScoreItems();
-    void removeScoreItems();
-    void displayFinalScore(int final_score);
-    void moveAllHit();
-    void displatAward(int final_score);
-    void removeAwardItems();
-    //void meshHit();
+    void initCountDownItems();//初始化倒數相關的物件
+    void removeCountDownItems();//移除倒數相關的物件
+    void initScoreItems();//初始化分數相關的物件
+    void removeScoreItems();//移除分數相關的物件
+    void displayFinalScore(int final_score);//顯示最後分數
+    void displatAward(int final_score);//顯示分數判定
+    void removeAwardItems();//移除分數判定相關的物件
     /* Variable */
     //start
     Btn *btn_start;
@@ -54,27 +52,27 @@ public:
 
     //play
     Btn *btn_pause;
+    HitR *hit_r;
+    HitB *hit_b;
     int pause_count;
     int btn_pause_w;
     int btn_pause_h;
-    int time_count;
-    HitR *hit_r;
-    HitB *hit_b;
-    int hit_num;
-    int order[100];
-    int hit_count;
-    QList<Hit *> list;
+    int time_count;//倒數用
+    int hit_num;//hit總數
+    int order[100];//存放順序
+    int hit_count;//提取順序用
+    int score_count;//分數加總
     Other *drum_r_r;
     Other *drum_r_l;
     Other *drum_b_r;
     Other *drum_b_l;
-    Other *judge;
-    int judge_w;
-    int judge_h;
+    Other *judge;//打擊區
+    Other *head_fullcombo;//"FULLCOMBO!!!!"
+    Other *head_timeRemain;//"時間剩下 秒"
+    Other *head_score;//"得分:"
+    QList<Hit *> list;
     QList<QGraphicsItem *> hit_list;
-    int score_count;
     bool fullcombo_check;
-    Other *head_fullcombo;
 
     //exit
     Btn *btn_yes;
@@ -90,8 +88,6 @@ public:
     int btn_conti_h;
 
     //For number
-    Other *head_timeRemain;
-    Other *head_score;
     Num *num_00;
     Num *num_10;
     Num *num_20;
@@ -131,37 +127,30 @@ public:
     Other *award_S;
     Other *award_SS;
 
-
-    // For sound
+    //For sound
     QSound *bgm;
     QSound *click;
     QSound *meow;
     QSound *drum_head;
     QSound *drum_rim;
 
-    // For timer
+    //For timer
     QTimer *run;
-    QTimer *check;
+    //QTimer *hitCheck;
     QTimer *countDown;
     QTimer *hitAppear;
     QTimer *hitCheck;
-    QTimer *score_check;
+    QTimer *scoreCheck;
 
+    QString screenMode;//場景控制
 
-    /* Use to control the scene page */
-    QString screenMode;
+    int hitBound;//hit消失的邊界
 
-    // For scene boundary
-    int hitBound;
-    int upperBound;
-    int lowerBound;
-    int leftBound;
-    int rightBound;
 public slots:
-    void takeHitAway();
-    void displayCountDown();
-    void displayHitAppear();
-    void displayScore();
+    void takeHitAway();//移除撞到邊界的hit
+    void displayCountDown();//顯示倒數
+    void displayHitAppear();//顯示hit由右向左前進
+    void displayScore();//顯示現在分數
 };
 
 #endif // SCENE_H

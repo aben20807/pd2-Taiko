@@ -13,11 +13,8 @@ void Scene::Init(int x_start)
     meow = new QSound(":sound/sound/meow.wav");
     drum_head = new QSound(":sound/sound/drum_head.wav");
     drum_rim = new QSound(":sound/sound/drum_rim.wav");
-    //  setting the boundary , only lowerBound has a little different
-    leftBound = x_start;
-    rightBound = x_start+370;
-    upperBound = 50;
-    hitBound = x_start+120;
+
+    hitBound = x_start+120;//hit消失的邊界
 }
 void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
@@ -370,8 +367,6 @@ void Scene::bgChange(QString mode)
         judge = new Other();
         QPixmap jud;
         jud.load(":image/img/judge.png");
-        judge_w = jud.width();
-        judge_h = jud.height();
         judge->setPixmap(jud);
         judge->setPos(180,138);
         addItem(judge);
@@ -426,7 +421,8 @@ void Scene::bgChange(QString mode)
         countDown->stop();//暫停倒數
         run->stop();
         hitAppear->stop();
-        score_check->stop();
+        scoreCheck->stop();
+        hitCheck->stop();
 
         removeItem(judge);
         removeItem(btn_pause);
@@ -465,7 +461,8 @@ void Scene::bgChange(QString mode)
         countDown->stop();//暫停倒數
         run->stop();
         hitAppear->stop();
-        score_check->stop();
+        scoreCheck->stop();
+        hitCheck->stop();
 
         QImage bg;
         bg.load(":/image/img/bg_score.png");
@@ -534,23 +531,23 @@ void Scene::gameInit()
     score_count = 0;
     hit_count = 0;
     fullcombo_check = true;
-    lowerBound = 450+50; // 50 is the bias (every picture's have it's original boundary)
+
     // Set up timer to control each item
     run = new QTimer(this);
     connect(run , SIGNAL(timeout()) , this , SLOT(advance()));
-    run->start(1);
-    check = new QTimer(this);
-    connect(check , SIGNAL(timeout()) , this , SLOT(takeHitAway()));
-    check->start(1);//每0.001秒觸發一次，越小越流暢
+    run->start(1);//每0.001秒觸發一次，越小越流暢
+    hitCheck = new QTimer(this);
+    connect(hitCheck , SIGNAL(timeout()) , this , SLOT(takeHitAway()));
+    hitCheck->start(1);
     countDown = new QTimer(this);
     connect(countDown , SIGNAL(timeout()) , this , SLOT(displayCountDown()));
     countDown->start(1000);
     hitAppear = new QTimer(this);
     connect(hitAppear , SIGNAL(timeout()) , this , SLOT(displayHitAppear()));
     hitAppear->start(1000);
-    score_check = new QTimer(this);
-    connect(score_check , SIGNAL(timeout()) , this , SLOT(displayScore()));
-    score_check->start(1);
+    scoreCheck = new QTimer(this);
+    connect(scoreCheck , SIGNAL(timeout()) , this , SLOT(displayScore()));
+    scoreCheck->start(1);
 }
 
 void Scene::takeHitAway()

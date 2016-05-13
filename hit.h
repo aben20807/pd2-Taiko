@@ -10,7 +10,7 @@ class Hit : public QGraphicsPixmapItem
 public:
     Hit();
 
-    double x_speed;
+    double x_speed;//hit移動速度
     void advance(int phase);
 };
 
