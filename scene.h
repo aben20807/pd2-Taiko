@@ -54,7 +54,7 @@ public:
     int btn_pause_h;
     int time_count;
     HitR *hit_r;
-    Hit *hit_b;
+    HitB *hit_b;
     int order[100];
     int hit_count;
     QList<Hit *> list;

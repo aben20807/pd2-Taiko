@@ -101,9 +101,12 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             pause_count++;
             if(pause_count > 1)
             {
+
                 screenMode = "pause";
                 bgChange("pause");
+
             }
+
         }
     }
     else if(screenMode == "pause")
@@ -140,19 +143,20 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 }
 void Scene::keyPressEvent(QKeyEvent *event)
 {
-    if(event->key() == Qt::Key_J || event->key() == Qt::Key_F)
+    if(screenMode == "play")
     {
-        QList<QGraphicsItem *> hit_list = this->collidingItems(judge);
-        foreach (QGraphicsItem *i, hit_list)
+        if(event->key() == Qt::Key_J || event->key() == Qt::Key_F)
         {
-
-            HitR *item = dynamic_cast<HitR *>(i);
-            this->removeItem(item);
-            list.removeOne(item);
-            delete item;
-        }
-        drum_head->play();
-        if(event->key() == Qt::Key_J)
+            QList<QGraphicsItem *> hit_list = this->collidingItems(judge);
+            foreach (QGraphicsItem *i, hit_list)
+            {
+                HitR *item = dynamic_cast<HitR *>(i);
+                this->removeItem(item);
+                list.removeOne(item);
+                delete item;
+            }
+            drum_head->play();
+            if(event->key() == Qt::Key_J)
         {
             addItem(drum_r_r);
             QTime t;
@@ -161,7 +165,7 @@ void Scene::keyPressEvent(QKeyEvent *event)
                 QCoreApplication::processEvents();
             removeItem(drum_r_r);
         }
-        if(event->key() == Qt::Key_F)
+            if(event->key() == Qt::Key_F)
         {
             addItem(drum_r_l);
             QTime t;
@@ -170,47 +174,46 @@ void Scene::keyPressEvent(QKeyEvent *event)
                 QCoreApplication::processEvents();
             removeItem(drum_r_l);
         }
-    }
-    else if(event->key() == Qt::Key_K || event->key() == Qt::Key_D)
-    {
-        QList<QGraphicsItem *> hit_list = this->collidingItems(judge);
-        foreach (QGraphicsItem *i, hit_list)
-        {
-            HitB *item = dynamic_cast<HitB *>(i);
-            this->removeItem(item);
-            list.removeOne(item);
-            delete item;
-
         }
-        drum_rim->play();
-        if(event->key() == Qt::Key_K)
+        else if(event->key() == Qt::Key_K || event->key() == Qt::Key_D)
         {
-
-            addItem(drum_b_r);
-            QTime t;
-            t.start();
-            while(t.elapsed()<100)//等待0.1秒
-                QCoreApplication::processEvents();
-            removeItem(drum_b_r);
+            QList<QGraphicsItem *> hit_list = this->collidingItems(judge);
+            foreach (QGraphicsItem *i, hit_list)
+            {
+                HitB *item = dynamic_cast<HitB *>(i);
+                this->removeItem(item);
+                list.removeOne(item);
+                delete item;
+            }
+            drum_rim->play();
+            if(event->key() == Qt::Key_K)
+            {
+                addItem(drum_b_r);
+                QTime t;
+                t.start();
+                while(t.elapsed()<100)//等待0.1秒
+                    QCoreApplication::processEvents();
+                removeItem(drum_b_r);
+            }
+            if(event->key() == Qt::Key_D)
+            {
+                addItem(drum_b_l);
+                QTime t;
+                t.start();
+                while(t.elapsed()<100)//等待0.1秒
+                    QCoreApplication::processEvents();
+                removeItem(drum_b_l);
+            }
         }
-        if(event->key() == Qt::Key_D)
+        else if(event->key() == Qt::Key_Escape)
         {
-            addItem(drum_b_l);
-            QTime t;
-            t.start();
-            while(t.elapsed()<100)//等待0.1秒
-                QCoreApplication::processEvents();
-            removeItem(drum_b_l);
-        }
-        }
-    else if(event->key() == Qt::Key_Escape)
-    {
-        click->play();
-        pause_count++;
-        if(pause_count > 1)
-        {
-            screenMode = "pause";
-            bgChange("pause");
+            click->play();
+            pause_count++;
+            if(pause_count > 1)
+            {
+                screenMode = "pause";
+                bgChange("pause");
+            }
         }
     }
 }
@@ -276,6 +279,13 @@ void Scene::bgChange(QString mode)
     }
     else if(mode == "play")
     {
+        if(time_count == 0)
+        {
+            run->stop();
+            countDown->stop();
+            hitAppear->stop();
+        }
+
         QImage bg;
         bg.load(":image/img/bg_play.png");
         //bg = bg.scaled(870,537);
@@ -363,6 +373,7 @@ void Scene::bgChange(QString mode)
         run->stop();
         hitAppear->stop();
 
+        removeItem(judge);
         removeItem(btn_pause);
         QImage bg;
         bg.load(":image/img/bg_pause.png");
@@ -399,11 +410,10 @@ void Scene::bgChange(QString mode)
 
 void Scene::gameInit()
 {
-
-    qsrand(time(NULL));
+    qsrand(time(NULL));//產生隨機鼓面
     for(int i=0;i<100;i++)
     {
-        order[i]=qrand()%3;
+        order[i]=qrand()%5;
     }
     time_count = 30;
     hit_count = 0;
@@ -516,15 +526,24 @@ void Scene::displayCountDown()
         break;
     }
     time_count--;
+    //cout<<time_count<<" ";
+    if(time_count < 0)
+    {
+        run->stop();
+        countDown->stop();
+        hitAppear->stop();
+        //bgChange("score");
+        //screenMode = "score";
+    }
 }
 
 void Scene::displayHitAppear()
 {
     if(order[hit_count] == 0)
     {
-
+        //not creat hit
     }
-    else if(order[hit_count] == 1)
+    else if(order[hit_count]%2 == 1)
     {
         hit_r = new HitR();
         QPixmap H_r;
@@ -534,7 +553,7 @@ void Scene::displayHitAppear()
         addItem(hit_r);
         list.push_back(hit_r);
     }
-    else if(order[hit_count] == 2)
+    else if(order[hit_count]%2 == 0)
     {
         hit_b = new HitB();
         QPixmap H_b;
