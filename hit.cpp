@@ -3,7 +3,7 @@
 using namespace std;
 Hit::Hit()
 {
-    x_speed = 0.08;
+    x_speed = 0.1;
 }
 void Hit::advance(int phase)
 {

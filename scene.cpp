@@ -77,7 +77,6 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             //cout<< "no exit"<< endl;
             click->play();
             screenMode = "start";
-            //cout<<screenMode<<endl;
             bgChange("restart_from_exit");
         }
         if((event->scenePos().x() >= btn_yes->pos().x() && event->scenePos().x() <= btn_yes->pos().x()+btn_yes_w) && (event->scenePos().y() >= btn_yes->pos().y() && event->scenePos().y() <= btn_yes->pos().y()+btn_yes_h))
@@ -106,12 +105,13 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             }
         }
     }
-    else if(screenMode == "pause" || screenMode == "score")
+    else if(screenMode == "pause" )
     {
         if(event->scenePos().x() >= btn_back->pos().x() && event->scenePos().x() <= btn_back->pos().x()+btn_conti_w && event->scenePos().y() >= btn_back->pos().y() && event->scenePos().y() <= btn_back->pos().y()+btn_conti_h)
         {
             click->play();
             removeCountDownItems();
+            removeScoreItems();
             bgChange("restart_from_pause");
             screenMode = "start";
         }
@@ -131,7 +131,50 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             removeItem(btn_back);
             removeItem(btn_conti);
             removeItem(btn_retry);
+            delete btn_back;
+            delete btn_conti;
+            delete btn_retry;
             removeCountDownItems();
+            removeScoreItems();
+            bgChange("play");
+            screenMode = "play";
+            gameInit();
+        }
+    }
+    else if(screenMode == "score")
+    {
+        if(event->scenePos().x() >= btn_back->pos().x() && event->scenePos().x() <= btn_back->pos().x()+btn_conti_w && event->scenePos().y() >= btn_back->pos().y() && event->scenePos().y() <= btn_back->pos().y()+btn_conti_h)
+        {
+            click->play();
+            removeScoreItems();
+            removeAwardItems();
+            removeItem(head_fullcombo);
+            delete head_fullcombo;
+            bgChange("restart_from_pause");
+            screenMode = "start";
+        }
+        else if(event->scenePos().x() >= btn_conti->pos().x() && event->scenePos().x() <= btn_conti->pos().x()+btn_conti_w && event->scenePos().y() >= btn_conti->pos().y() && event->scenePos().y() <= btn_conti->pos().y()+btn_conti_h)
+        {
+            click->play();
+        }
+        if(event->scenePos().x() >= btn_retry->pos().x() && event->scenePos().x() <= btn_retry->pos().x()+btn_conti_w && event->scenePos().y() >= btn_retry->pos().y() && event->scenePos().y() <= btn_retry->pos().y()+btn_conti_h)
+        {
+            click->play();
+            foreach (Hit *i , list)
+            {
+                this->removeItem(i);
+                list.removeOne(i);
+            }
+            removeItem(btn_back);
+            removeItem(btn_conti);
+            removeItem(btn_retry);
+            removeItem(head_fullcombo);
+            delete btn_back;
+            delete btn_conti;
+            delete btn_retry;
+            delete head_fullcombo;
+            removeScoreItems();
+            removeAwardItems();
             bgChange("play");
             screenMode = "play";
             gameInit();
@@ -151,6 +194,8 @@ void Scene::keyPressEvent(QKeyEvent *event)
                 this->removeItem(item);
                 list.removeOne(item);
                 delete item;
+                hit_num++;//計算hit總數
+                score_count++;
             }
             drum_head->play();
             if(event->key() == Qt::Key_J)
@@ -181,6 +226,8 @@ void Scene::keyPressEvent(QKeyEvent *event)
                 this->removeItem(item);
                 list.removeOne(item);
                 delete item;
+                hit_num++;//計算hit總數
+                score_count++;
             }
             drum_rim->play();
             if(event->key() == Qt::Key_K)
@@ -329,7 +376,9 @@ void Scene::bgChange(QString mode)
         judge->setPos(180,138);
         addItem(judge);
 
-        initAllNumItems();
+        initCountDownItems();
+        initScoreItems();
+
         head_timeRemain = new Other();
         QPixmap h_t;
         h_t.load(":image/img/head_timeRemain.png");
@@ -377,6 +426,7 @@ void Scene::bgChange(QString mode)
         countDown->stop();//暫停倒數
         run->stop();
         hitAppear->stop();
+        score_check->stop();
 
         removeItem(judge);
         removeItem(btn_pause);
@@ -412,18 +462,37 @@ void Scene::bgChange(QString mode)
     }
     else if(mode == "score")
     {
+        countDown->stop();//暫停倒數
+        run->stop();
+        hitAppear->stop();
+        score_check->stop();
+
         QImage bg;
         bg.load(":/image/img/bg_score.png");
         this->setBackgroundBrush(bg);
-        removeItem(head_score);
+
         removeCountDownItems();
+        removeScoreItems();
         removeItem(judge);
         removeItem(btn_pause);
+        initScoreItems();
+        displayFinalScore(score_count);//顯示總分
+
+        head_fullcombo = new Other();
+        QPixmap h_f;
+        h_f.load(":image/img/head_fullcombo.png");
+        head_fullcombo->setPixmap(h_f);
+        head_fullcombo->setPos(430,130);
+        if(fullcombo_check)
+        {
+            addItem(head_fullcombo);
+        }
         foreach (Hit *i , list)
         {
             this->removeItem(i);
             list.removeOne(i);
         }
+        displatAward(score_count);
         //retry
         btn_retry = new Btn();
         QPixmap retry;
@@ -455,13 +524,16 @@ void Scene::bgChange(QString mode)
 
 void Scene::gameInit()
 {
+    hit_num = 0;
     qsrand(time(NULL));//產生隨機鼓面
     for(int i=0;i<100;i++)
     {
         order[i]=qrand()%5;
     }
-    time_count = 10;
+    time_count = 30;
+    score_count = 0;
     hit_count = 0;
+    fullcombo_check = true;
     lowerBound = 450+50; // 50 is the bias (every picture's have it's original boundary)
     // Set up timer to control each item
     run = new QTimer(this);
@@ -476,6 +548,9 @@ void Scene::gameInit()
     hitAppear = new QTimer(this);
     connect(hitAppear , SIGNAL(timeout()) , this , SLOT(displayHitAppear()));
     hitAppear->start(1000);
+    score_check = new QTimer(this);
+    connect(score_check , SIGNAL(timeout()) , this , SLOT(displayScore()));
+    score_check->start(1);
 }
 
 void Scene::takeHitAway()
@@ -487,6 +562,8 @@ void Scene::takeHitAway()
             removeItem(i);
             list.removeOne(i);
             delete i;
+            fullcombo_check = false;//有漏掉就不會fullcombo
+            hit_num++;//計算總hit數
         }
     }
 }
@@ -580,6 +657,89 @@ void Scene::displayCountDown()
         bgChange("score");
         screenMode = "score";
     }
+
+}
+
+void Scene::displayScore()
+{
+    switch (score_count/10) {//十位數
+    case 0:
+        //removeItem(num_10s);
+        num_00s->setPos(730,40);
+        addItem(num_00s);
+        break;
+    case 1:
+        removeItem(num_00s);
+        num_10s->setPos(730,40);
+        addItem(num_10s);
+        break;
+    case 2:
+        removeItem(num_10s);
+        num_20s->setPos(730,40);
+        addItem(num_20s);
+        break;
+    case 3:
+        removeItem(num_20s);
+        num_30s->setPos(730,40);
+        addItem(num_30s);
+        break;
+    default:
+        break;
+    }
+    switch (score_count%10) {//個位數
+    case 0:
+        removeItem(num_9s);
+        num_0s->setPos(750,40);
+        addItem(num_0s);
+        break;
+    case 1:
+        removeItem(num_0s);
+        num_1s->setPos(750,40);
+        addItem(num_1s);
+        break;
+    case 2:
+        removeItem(num_1s);
+        num_2s->setPos(750,40);
+        addItem(num_2s);
+        break;
+    case 3:
+        removeItem(num_2s);
+        num_3s->setPos(750,40);
+        addItem(num_3s);
+        break;
+    case 4:
+        removeItem(num_3s);
+        num_4s->setPos(750,40);
+        addItem(num_4s);
+        break;
+    case 5:
+        removeItem(num_4s);
+        num_5s->setPos(750,40);
+        addItem(num_5s);
+        break;
+    case 6:
+        removeItem(num_5s);
+        num_6s->setPos(750,40);
+        addItem(num_6s);
+        break;
+    case 7:
+        removeItem(num_6s);
+        num_7s->setPos(750,40);
+        addItem(num_7s);
+        break;
+    case 8:
+        removeItem(num_7s);
+        num_8s->setPos(750,40);
+        addItem(num_8s);
+        break;
+    case 9:
+        removeItem(num_8s);
+        num_9s->setPos(750,40);
+        addItem(num_9s);
+        break;
+    default:
+        break;
+    }
 }
 
 void Scene::displayHitAppear()
@@ -611,7 +771,7 @@ void Scene::displayHitAppear()
     hit_count++;
 }
 
-void Scene::initAllNumItems()
+void Scene::initCountDownItems()
 {
     num_0 = new Num();
     QPixmap n_0;
@@ -680,5 +840,257 @@ void Scene::removeCountDownItems()
     removeItem(num_10);
     removeItem(num_20);
     removeItem(num_30);
+    delete num_0;
+    delete num_1;
+    delete num_2;
+    delete num_3;
+    delete num_4;
+    delete num_5;
+    delete num_6;
+    delete num_7;
+    delete num_8;
+    delete num_9;
+    delete num_00;
+    delete num_10;
+    delete num_20;
+    delete num_30;
 }
 
+void Scene::initScoreItems()
+{
+    num_0s = new Num();
+    QPixmap n_0;
+    n_0.load(":image/img/num_0.png");
+    num_0s->setPixmap(n_0);
+    num_1s = new Num();
+    QPixmap n_1;
+    n_1.load(":image/img/num_1.png");
+    num_1s->setPixmap(n_1);
+    num_2s = new Num();
+    QPixmap n_2;
+    n_2.load(":image/img/num_2.png");
+    num_2s->setPixmap(n_2);
+    num_3s = new Num();
+    QPixmap n_3;
+    n_3.load(":image/img/num_3.png");
+    num_3s->setPixmap(n_3);
+    num_4s = new Num();
+    QPixmap n_4;
+    n_4.load(":image/img/num_4.png");
+    num_4s->setPixmap(n_4);
+    num_5s = new Num();
+    QPixmap n_5;
+    n_5.load(":image/img/num_5.png");
+    num_5s->setPixmap(n_5);
+    num_6s = new Num();
+    QPixmap n_6;
+    n_6.load(":image/img/num_6.png");
+    num_6s->setPixmap(n_6);
+    num_7s = new Num();
+    QPixmap n_7;
+    n_7.load(":image/img/num_7.png");
+    num_7s->setPixmap(n_7);
+    num_8s = new Num();
+    QPixmap n_8;
+    n_8.load(":image/img/num_8.png");
+    num_8s->setPixmap(n_8);
+    num_9s = new Num();
+    QPixmap n_9;
+    n_9.load(":image/img/num_9.png");
+    num_9s->setPixmap(n_9);
+    num_00s = new Num();
+    num_00s->setPixmap(n_0);
+    num_10s = new Num();
+    num_10s->setPixmap(n_1);
+    num_20s = new Num();
+    num_20s->setPixmap(n_2);
+    num_30s = new Num();
+    num_30s->setPixmap(n_3);
+}
+
+void Scene::removeScoreItems()
+{
+    removeItem(head_score);
+    removeItem(num_0s);
+    removeItem(num_1s);
+    removeItem(num_2s);
+    removeItem(num_3s);
+    removeItem(num_4s);
+    removeItem(num_5s);
+    removeItem(num_6s);
+    removeItem(num_7s);
+    removeItem(num_8s);
+    removeItem(num_9s);
+    removeItem(num_00s);
+    removeItem(num_10s);
+    removeItem(num_20s);
+    removeItem(num_30s);
+    delete num_0s;
+    delete num_1s;
+    delete num_2s;
+    delete num_3s;
+    delete num_4s;
+    delete num_5s;
+    delete num_6s;
+    delete num_7s;
+    delete num_8s;
+    delete num_9s;
+    delete num_00s;
+    delete num_10s;
+    delete num_20s;
+    delete num_30s;
+}
+
+void Scene::displayFinalScore(int final_score)
+{
+    switch (final_score/10) {//十位數
+    case 0:
+        num_00s->setPos(300,135);
+        addItem(num_00s);
+        break;
+    case 1:
+        num_10s->setPos(300,135);
+        addItem(num_10s);
+        break;
+    case 2:
+        num_20s->setPos(300,135);
+        addItem(num_20s);
+        break;
+    case 3:
+        num_30s->setPos(300,135);
+        addItem(num_30s);
+        break;
+    default:
+        break;
+    }
+    switch (final_score%10) {//個位數
+    case 0:
+        num_0s->setPos(320,135);
+        addItem(num_0s);
+        break;
+    case 1:
+        num_1s->setPos(320,135);
+        addItem(num_1s);
+        break;
+    case 2:
+        num_2s->setPos(320,135);
+        addItem(num_2s);
+        break;
+    case 3:
+        num_3s->setPos(320,135);
+        addItem(num_3s);
+        break;
+    case 4:
+        num_4s->setPos(320,135);
+        addItem(num_4s);
+        break;
+    case 5:
+        num_5s->setPos(320,135);
+        addItem(num_5s);
+        break;
+    case 6:
+        num_6s->setPos(320,135);
+        addItem(num_6s);
+        break;
+    case 7:
+        num_7s->setPos(320,135);
+        addItem(num_7s);
+        break;
+    case 8:
+        num_8s->setPos(320,135);
+        addItem(num_8s);
+        break;
+    case 9:
+        num_9s->setPos(320,135);
+        addItem(num_9s);
+        break;
+    default:
+        break;
+    }
+}
+
+void Scene::displatAward(int final_score)
+{
+    award_A = new Other();
+    QPixmap a_A;
+    a_A.load(":image/img/award_A.png");
+    award_A->setPixmap(a_A);
+    award_A->setPos(350,180);
+    award_B = new Other();
+    QPixmap a_B;
+    a_B.load(":image/img/award_B.png");
+    award_B->setPixmap(a_B);
+    award_B->setPos(350,180);
+    award_C = new Other();
+    QPixmap a_C;
+    a_C.load(":image/img/award_C.png");
+    award_C->setPixmap(a_C);
+    award_C->setPos(350,180);
+    award_D = new Other();
+    QPixmap a_D;
+    a_D.load(":image/img/award_D.png");
+    award_D->setPixmap(a_D);
+    award_D->setPos(150,180);
+    award_F = new Other();
+    QPixmap a_F;
+    a_F.load(":image/img/award_F.png");
+    award_F->setPixmap(a_F);
+    award_F->setPos(350,180);
+    award_S = new Other();
+    QPixmap a_S;
+    a_S.load(":image/img/award_S.png");
+    award_S->setPixmap(a_S);
+    award_S->setPos(350,180);
+    award_SS = new Other();
+    QPixmap a_SS;
+    a_SS.load(":image/img/award_SS.png");
+    award_SS->setPixmap(a_SS);
+    award_SS->setPos(350,180);
+
+    if(final_score == hit_num)
+    {
+        addItem(award_SS);
+    }
+    else if(final_score*100 >= hit_num*95)
+    {
+        addItem(award_S);
+    }
+    else if(final_score*100 >= hit_num*90)
+    {
+        addItem(award_A);
+    }
+    else if(final_score*100 >= hit_num*80)
+    {
+        addItem(award_B);
+    }
+    else if(final_score*100 >= hit_num*70)
+    {
+        addItem(award_C);
+    }
+    else if(final_score*100 >= hit_num*60)
+    {
+        addItem(award_D);
+    }
+    else
+    {
+        addItem(award_F);
+    }
+}
+
+void Scene::removeAwardItems()
+{
+    removeItem(award_A);
+    removeItem(award_B);
+    removeItem(award_C);
+    removeItem(award_D);
+    removeItem(award_F);
+    removeItem(award_S);
+    removeItem(award_SS);
+    delete award_A;
+    delete award_B;
+    delete award_C;
+    delete award_D;
+    delete award_F;
+    delete award_S;
+    delete award_SS;
+}

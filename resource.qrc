@@ -35,6 +35,14 @@
         <file>img/judge.png</file>
         <file>img/bg_score.png</file>
         <file>img/head_score.png</file>
+        <file>img/head_fullcombo.png</file>
+        <file>img/award_A.png</file>
+        <file>img/award_B.png</file>
+        <file>img/award_C.png</file>
+        <file>img/award_D.png</file>
+        <file>img/award_F.png</file>
+        <file>img/award_S.png</file>
+        <file>img/award_SS.png</file>
     </qresource>
     <qresource prefix="/sound">
         <file>sound/click.wav</file>

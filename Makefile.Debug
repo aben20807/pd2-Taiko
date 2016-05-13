@@ -123,40 +123,49 @@ compiler_rcc_make_all: debug/qrc_resource.cpp
 compiler_rcc_clean:
 	-$(DEL_FILE) debug\qrc_resource.cpp
 debug/qrc_resource.cpp: resource.qrc \
-		img/bg_score.png \
-		img/bg_start_ori.jpg \
-		img/drum_blue_right.png \
-		img/bg_play.png \
 		img/head_timeRemain.png \
-		img/btn_start.png \
-		img/drum_blue_left.png \
-		img/btn_retry.png \
-		img/btn_no.png \
-		img/hit_b.png \
-		img/bg_pause.png \
 		img/btn_back.png \
-		img/judge.png \
-		img/bg_exit.png \
-		img/bg_start.png \
-		img/num_0.png \
-		img/drum_red_right.png \
-		img/icon.png \
-		img/btn_conti.png \
-		img/num_1.png \
-		img/num_2.png \
 		img/num_3.png \
-		img/num_4.png \
-		img/num_5.png \
-		img/num_6.png \
-		img/hit_r.png \
-		img/btn_yes.png \
-		img/num_7.png \
-		img/drum_red_left.png \
-		img/num_8.png \
-		img/num_9.png \
-		img/btn_pause.png \
-		img/btn_face.png \
+		img/award_F.png \
 		img/btn_exit.png \
+		img/btn_start.png \
+		img/bg_score.png \
+		img/num_2.png \
+		img/drum_red_left.png \
+		img/bg_play.png \
+		img/hit_r.png \
+		img/num_1.png \
+		img/bg_start_ori.jpg \
+		img/head_score.png \
+		img/award_D.png \
+		img/num_0.png \
+		img/btn_yes.png \
+		img/btn_conti.png \
+		img/award_C.png \
+		img/num_9.png \
+		img/btn_retry.png \
+		img/icon.png \
+		img/drum_red_right.png \
+		img/award_B.png \
+		img/num_8.png \
+		img/award_SS.png \
+		img/award_A.png \
+		img/num_7.png \
+		img/btn_no.png \
+		img/bg_start.png \
+		img/drum_blue_right.png \
+		img/judge.png \
+		img/head_fullcombo.png \
+		img/num_6.png \
+		img/award_S.png \
+		img/bg_pause.png \
+		img/btn_pause.png \
+		img/drum_blue_left.png \
+		img/num_5.png \
+		img/hit_b.png \
+		img/bg_exit.png \
+		img/btn_face.png \
+		img/num_4.png \
 		sound/click.wav \
 		sound/drum_head.wav \
 		sound/meow.wav \

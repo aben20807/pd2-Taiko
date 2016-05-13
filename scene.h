@@ -31,10 +31,15 @@ public:
     //void hitMove();
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void keyPressEvent(QKeyEvent *event);
-    void initAllNumItems();
+    void initCountDownItems();
     void removeCountDownItems();
+    void initScoreItems();
+    void removeScoreItems();
+    void displayFinalScore(int final_score);
     void moveAllHit();
-    void meshHit();
+    void displatAward(int final_score);
+    void removeAwardItems();
+    //void meshHit();
     /* Variable */
     //start
     Btn *btn_start;
@@ -55,6 +60,7 @@ public:
     int time_count;
     HitR *hit_r;
     HitB *hit_b;
+    int hit_num;
     int order[100];
     int hit_count;
     QList<Hit *> list;
@@ -66,7 +72,9 @@ public:
     int judge_w;
     int judge_h;
     QList<QGraphicsItem *> hit_list;
-
+    int score_count;
+    bool fullcombo_check;
+    Other *head_fullcombo;
 
     //exit
     Btn *btn_yes;
@@ -99,6 +107,31 @@ public:
     Num *num_8;
     Num *num_9;
 
+    Num *num_00s;
+    Num *num_10s;
+    Num *num_20s;
+    Num *num_30s;
+    Num *num_0s;
+    Num *num_1s;
+    Num *num_2s;
+    Num *num_3s;
+    Num *num_4s;
+    Num *num_5s;
+    Num *num_6s;
+    Num *num_7s;
+    Num *num_8s;
+    Num *num_9s;
+
+    //For award
+    Other *award_A;
+    Other *award_B;
+    Other *award_C;
+    Other *award_D;
+    Other *award_F;
+    Other *award_S;
+    Other *award_SS;
+
+
     // For sound
     QSound *bgm;
     QSound *click;
@@ -112,6 +145,7 @@ public:
     QTimer *countDown;
     QTimer *hitAppear;
     QTimer *hitCheck;
+    QTimer *score_check;
 
 
     /* Use to control the scene page */
@@ -127,6 +161,7 @@ public slots:
     void takeHitAway();
     void displayCountDown();
     void displayHitAppear();
+    void displayScore();
 };
 
 #endif // SCENE_H
