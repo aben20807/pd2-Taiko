@@ -43,6 +43,7 @@ public:
     Btn *btn_start;
     Btn *btn_exit;
     Btn *btn_face;
+    Btn *btn_teach;
     bool face_check;
     int face_count;
     int btn_w;

@@ -139,6 +139,8 @@ release/qrc_resource.cpp: resource.qrc \
 		img/head_score.png \
 		img/award_D.png \
 		img/num_0.png \
+		img/bg_teach.png \
+		img/btn_teach.png \
 		img/btn_yes.png \
 		img/btn_conti.png \
 		img/award_C.png \
@@ -153,6 +155,7 @@ release/qrc_resource.cpp: resource.qrc \
 		img/num_7.png \
 		img/btn_no.png \
 		img/bg_start.png \
+		img/bg_exit88.png \
 		img/drum_blue_right.png \
 		img/judge.png \
 		img/head_fullcombo.png \
