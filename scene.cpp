@@ -15,6 +15,8 @@ void Scene::Init(int x_start)
     drum_rim = new QSound(":sound/sound/drum_rim.wav");
 
     hitBound = x_start+120;//hit消失的邊界
+    sound_checkD = true;
+    sound_checkC = true;
 }
 void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
@@ -25,15 +27,21 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         {
             //cout<< "Start Game"<< endl;
             //bgm->stop();
-            click->play();
+            if(sound_checkC)
+            {
+                click->play();
+            }
             removeItem(btn_start);
             removeItem(btn_exit);
             removeItem(btn_face);
             removeItem(btn_teach);
+            removeItem(btn_setting);
             delete btn_start;
             delete btn_exit;
             delete btn_face;
             delete btn_teach;
+            delete btn_setting;
+
             bgChange("play");
             // Goto setting the game initial
             screenMode = "play";
@@ -44,15 +52,30 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         {
             //cout<< "exit"<< endl;
             //bgm->stop();
-            click->play();
+            if(sound_checkC)
+            {
+                click->play();
+            }
             bgChange("exit");
             screenMode = "exit"; // mode to exit
         }
         else if((event->scenePos().x() >= btn_teach->pos().x() && event->scenePos().x() <= btn_teach->pos().x()+btn_w) && (event->scenePos().y() >= btn_teach->pos().y() && event->scenePos().y() <= btn_teach->pos().y()+btn_h))
         {
-            click->play();
+            if(sound_checkC)
+            {
+                click->play();
+            }
             bgChange("teach");
             screenMode = "teach";
+        }
+        else if((event->scenePos().x() >= btn_setting->pos().x() && event->scenePos().x() <= btn_setting->pos().x()+btn_w) && (event->scenePos().y() >= btn_setting->pos().y() && event->scenePos().y() <= btn_setting->pos().y()+btn_h))
+        {
+            if(sound_checkC)
+            {
+                click->play();
+            }
+            bgChange("setting");
+            screenMode = "setting";
         }
         //or click on face
         else if((event->scenePos().x() >= btn_face->pos().x() && event->scenePos().x() <= btn_face->pos().x()+btn_face_w) && (event->scenePos().y() >= btn_face->pos().y() && event->scenePos().y() <= btn_face->pos().y()+btn_face_h))
@@ -82,37 +105,123 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     {
         if(event->scenePos().x() >= btn_back->pos().x() && event->scenePos().x() <= btn_back->pos().x()+btn_conti_w && event->scenePos().y() >= btn_back->pos().y() && event->scenePos().y() <= btn_back->pos().y()+btn_conti_h)
         {
-            click->play();
+            if(sound_checkC)
+            {
+                click->play();
+            }
             removeItem(btn_back);
             delete btn_back;
             bgChange("start");
             screenMode = "start";
         }
     }
+    else if(screenMode == "setting")
+    {
+        if(event->scenePos().x() >= btn_back->pos().x() && event->scenePos().x() <= btn_back->pos().x()+btn_conti_w && event->scenePos().y() >= btn_back->pos().y() && event->scenePos().y() <= btn_back->pos().y()+btn_conti_h)
+        {
+            if(sound_checkC)
+            {
+                click->play();
+            }
+            removeItem(btn_back);
+            removeItem(btn_open);
+            removeItem(btn_close);
+            removeItem(btn_openC);
+            removeItem(btn_closeC);
+            removeItem(sound_setD);
+            removeItem(sound_setC);
+            delete btn_back;
+            delete btn_open;
+            delete btn_close;
+            delete btn_openC;
+            delete btn_closeC;
+            delete sound_setD;
+            delete sound_setC;
+            bgChange("start");
+            screenMode = "start";
+        }
+        //設定擊鼓聲
+        else if(event->scenePos().x() >= btn_open->pos().x() && event->scenePos().x() <= btn_open->pos().x()+btn_conti_w && event->scenePos().y() >= btn_open->pos().y() && event->scenePos().y() <= btn_open->pos().y()+btn_conti_h)
+        {//開
+            if(sound_checkC)
+            {
+                click->play();
+            }
+            sound_checkD = true;
+            removeItem(sound_setD);
+            sound_setD->setPos(430,230);
+            addItem(sound_setD);
+        }
+        else if(event->scenePos().x() >= btn_close->pos().x() && event->scenePos().x() <= btn_close->pos().x()+btn_conti_w && event->scenePos().y() >= btn_close->pos().y() && event->scenePos().y() <= btn_close->pos().y()+btn_conti_h)
+        {//關
+            if(sound_checkC)
+            {
+                click->play();
+            }
+            sound_checkD = false;
+            removeItem(sound_setD);
+            sound_setD->setPos(530,230);
+            addItem(sound_setD);
+        }
+        //設定點擊聲
+        else if(event->scenePos().x() >= btn_openC->pos().x() && event->scenePos().x() <= btn_openC->pos().x()+btn_conti_w && event->scenePos().y() >= btn_openC->pos().y() && event->scenePos().y() <= btn_openC->pos().y()+btn_conti_h)
+        {//開
+            if(sound_checkC)
+            {
+                click->play();
+            }
+            sound_checkC = true;
+            removeItem(sound_setC);
+            sound_setC->setPos(430,130);
+            addItem(sound_setC);
+        }
+        else if(event->scenePos().x() >= btn_closeC->pos().x() && event->scenePos().x() <= btn_closeC->pos().x()+btn_conti_w && event->scenePos().y() >= btn_closeC->pos().y() && event->scenePos().y() <= btn_closeC->pos().y()+btn_conti_h)
+        {//關
+            if(sound_checkC)
+            {
+                click->play();
+            }
+            sound_checkC = false;
+            removeItem(sound_setC);
+            sound_setC->setPos(530,130);
+            addItem(sound_setC);
+        }
+
+    }
     else if(screenMode == "exit")
     {
         if((event->scenePos().x() >= btn_no->pos().x() && event->scenePos().x() <= btn_no->pos().x()+btn_yes_w) && (event->scenePos().y() >= btn_no->pos().y() && event->scenePos().y() <= btn_no->pos().y()+btn_yes_h))
         {
             //cout<< "no exit"<< endl;
-            click->play();
+            if(sound_checkC)
+            {
+                click->play();
+            }
             screenMode = "start";
             bgChange("restart_from_exit");
         }
-        if((event->scenePos().x() >= btn_yes->pos().x() && event->scenePos().x() <= btn_yes->pos().x()+btn_yes_w) && (event->scenePos().y() >= btn_yes->pos().y() && event->scenePos().y() <= btn_yes->pos().y()+btn_yes_h))
+        else if((event->scenePos().x() >= btn_yes->pos().x() && event->scenePos().x() <= btn_yes->pos().x()+btn_yes_w) && (event->scenePos().y() >= btn_yes->pos().y() && event->scenePos().y() <= btn_yes->pos().y()+btn_yes_h))
         {
             //cout<< "confirm exit"<< endl;
-            click->play();
+            if(sound_checkC)
+            {
+                click->play();
+            }
             //wait
             QTime t;
             t.start();
-            while(t.elapsed()<500)//等待0.5秒
+            while(t.elapsed()<300)//等待0.3秒
                 QCoreApplication::processEvents();
+            removeItem(btn_yes);
+            removeItem(btn_no);
+            delete btn_yes;
+            delete btn_no;
             QImage bg;
             bg.load(":image/img/bg_exit88.png");
             setBackgroundBrush(bg);
             QTime tt;
             tt.start();
-            while(tt.elapsed()<500)//等待0.5秒
+            while(tt.elapsed()<700)//等待0.7秒
                 QCoreApplication::processEvents();
             QApplication::quit();
         }
@@ -122,7 +231,10 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         // Starting Page
         if(event->scenePos().x() > btn_pause->pos().x() && event->scenePos().x() <= btn_pause->pos().x()+btn_pause_w && event->scenePos().y() > btn_pause->pos().y() && event->scenePos().y() <= btn_pause->pos().y()+btn_pause_h)
         {
-            click->play();
+            if(sound_checkC)
+            {
+                click->play();
+            }
             pause_count++;
             if(pause_count > 1)
             {
@@ -135,7 +247,10 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     {
         if(event->scenePos().x() >= btn_back->pos().x() && event->scenePos().x() <= btn_back->pos().x()+btn_conti_w && event->scenePos().y() >= btn_back->pos().y() && event->scenePos().y() <= btn_back->pos().y()+btn_conti_h)
         {
-            click->play();
+            if(sound_checkC)
+            {
+                click->play();
+            }
             removeCountDownItems();
             removeScoreItems();
             bgChange("restart_from_pause");
@@ -146,9 +261,12 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             click->play();
             countDown->stop();
         }*/
-        if(event->scenePos().x() >= btn_retry->pos().x() && event->scenePos().x() <= btn_retry->pos().x()+btn_conti_w && event->scenePos().y() >= btn_retry->pos().y() && event->scenePos().y() <= btn_retry->pos().y()+btn_conti_h)
+        else if(event->scenePos().x() >= btn_retry->pos().x() && event->scenePos().x() <= btn_retry->pos().x()+btn_conti_w && event->scenePos().y() >= btn_retry->pos().y() && event->scenePos().y() <= btn_retry->pos().y()+btn_conti_h)
         {
-            click->play();
+            if(sound_checkC)
+            {
+                click->play();
+            }
             foreach (Hit *i , list)
             {
                 this->removeItem(i);
@@ -171,7 +289,10 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     {
         if(event->scenePos().x() >= btn_back->pos().x() && event->scenePos().x() <= btn_back->pos().x()+btn_conti_w && event->scenePos().y() >= btn_back->pos().y() && event->scenePos().y() <= btn_back->pos().y()+btn_conti_h)
         {
-            click->play();
+            if(sound_checkC)
+            {
+                click->play();
+            }
             removeScoreItems();
             removeAwardItems();
             removeItem(head_fullcombo);
@@ -183,9 +304,12 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         {
             click->play();
         }*/
-        if(event->scenePos().x() >= btn_retry->pos().x() && event->scenePos().x() <= btn_retry->pos().x()+btn_conti_w && event->scenePos().y() >= btn_retry->pos().y() && event->scenePos().y() <= btn_retry->pos().y()+btn_conti_h)
+        else if(event->scenePos().x() >= btn_retry->pos().x() && event->scenePos().x() <= btn_retry->pos().x()+btn_conti_w && event->scenePos().y() >= btn_retry->pos().y() && event->scenePos().y() <= btn_retry->pos().y()+btn_conti_h)
         {
-            click->play();
+            if(sound_checkC)
+            {
+                click->play();
+            }
             foreach (Hit *i , list)
             {
                 this->removeItem(i);
@@ -223,7 +347,10 @@ void Scene::keyPressEvent(QKeyEvent *event)
                 hit_num++;//計算hit總數
                 score_count++;
             }
-            drum_head->play();
+            if(sound_checkD)
+            {
+                drum_head->play();
+            }
             if(event->key() == Qt::Key_J)
         {
             addItem(drum_r_r);
@@ -255,7 +382,10 @@ void Scene::keyPressEvent(QKeyEvent *event)
                 hit_num++;//計算hit總數
                 score_count++;
             }
-            drum_rim->play();
+            if(sound_checkD)
+            {
+                drum_rim->play();
+            }
             if(event->key() == Qt::Key_K)
             {
                 addItem(drum_b_r);
@@ -286,7 +416,6 @@ void Scene::keyPressEvent(QKeyEvent *event)
             }
         }
     }
-
 }
 
 void Scene::bgChange(QString mode)
@@ -300,7 +429,6 @@ void Scene::bgChange(QString mode)
         btn_start = new Btn();
         QPixmap start;
         start.load(":image/img/btn_start.png");
-        //start = start.scaled(start.width(),start.height(),Qt::KeepAspectRatio);
         btn_w = start.width();
         btn_h = start.height();
         btn_start->setPixmap(start);
@@ -310,7 +438,6 @@ void Scene::bgChange(QString mode)
         btn_exit = new Btn();
         QPixmap exit;
         exit.load(":image/img/btn_exit.png");
-        exit = exit.scaled(exit.width(),exit.height(),Qt::KeepAspectRatio);
         btn_exit->setPixmap(exit);
         btn_exit->setPos(680,390);
         addItem(btn_exit);
@@ -318,7 +445,6 @@ void Scene::bgChange(QString mode)
         btn_face = new Btn();
         QPixmap face;
         face.load(":image/img/btn_face.png");
-        face = face.scaled(face.width(),face.height(),Qt::KeepAspectRatio);
         btn_face_w = face.width();
         btn_face_h = face.height();
         btn_face->setPixmap(face);
@@ -333,6 +459,12 @@ void Scene::bgChange(QString mode)
         btn_teach->setPixmap(teach);
         btn_teach->setPos(40,310);
         addItem(btn_teach);
+        btn_setting = new Btn();
+        QPixmap setting;
+        setting.load(":image/img/btn_setting.png");
+        btn_setting->setPixmap(setting);
+        btn_setting->setPos(40,390);
+        addItem(btn_setting);
     }
     else if(mode == "restart_from_exit")
     {
@@ -363,10 +495,12 @@ void Scene::bgChange(QString mode)
         removeItem(btn_start);
         removeItem(btn_exit);
         removeItem(btn_teach);
+        removeItem(btn_setting);
         delete btn_start;
         delete btn_exit;
         delete btn_face;
         delete btn_teach;
+        delete btn_setting;
 
         QImage bg;
         bg.load(":image/img/bg_teach.png");
@@ -374,10 +508,87 @@ void Scene::bgChange(QString mode)
         btn_back = new Btn();
         QPixmap back;
         back.load(":image/img/btn_back.png");
-        back = back.scaled(back.width(),back.height(),Qt::KeepAspectRatio);
+        btn_conti_w = back.width();
+        btn_conti_h = back.height();
         btn_back->setPixmap(back);
         btn_back->setPos(630,380);
         addItem(btn_back);
+    }
+    else if(mode == "setting")
+    {
+        removeItem(btn_face);
+        removeItem(btn_start);
+        removeItem(btn_exit);
+        removeItem(btn_teach);
+        removeItem(btn_setting);
+        delete btn_start;
+        delete btn_exit;
+        delete btn_face;
+        delete btn_teach;
+        delete btn_setting;
+
+        QImage bg;
+        bg.load(":image/img/bg_setting.png");
+        this->setBackgroundBrush(bg);
+        btn_back = new Btn();
+        QPixmap back;
+        back.load(":image/img/btn_back.png");
+        btn_conti_w = back.width();
+        btn_conti_h = back.height();
+        btn_back->setPixmap(back);
+        btn_back->setPos(630,380);
+        addItem(btn_back);
+        btn_open = new Btn();
+        QPixmap open;
+        open.load(":image/img/btn_open.png");
+        btn_open->setPixmap(open);
+        btn_open->setPos(430,230);
+        addItem(btn_open);
+        btn_close = new Btn();
+        QPixmap close;
+        close.load(":image/img/btn_close.png");
+        btn_close->setPixmap(close);
+        btn_close->setPos(530,230);
+        addItem(btn_close);
+        sound_setD = new Other();
+        QPixmap s_setD;
+        s_setD.load(":image/img/sound_setting.png");
+        sound_setD->setPixmap(s_setD);
+        if(sound_checkD)
+        {
+            sound_setD->setPos(430,230);
+        }
+        else
+        {
+            sound_setD->setPos(530,230);
+        }
+        addItem(sound_setD);
+
+        btn_openC = new Btn();
+        QPixmap openC;
+        openC.load(":image/img/btn_open.png");
+        btn_openC->setPixmap(openC);
+        btn_openC->setPos(430,130);
+        addItem(btn_openC);
+        btn_closeC = new Btn();
+        QPixmap closeC;
+        closeC.load(":image/img/btn_close.png");
+        btn_closeC->setPixmap(closeC);
+        btn_closeC->setPos(530,130);
+        addItem(btn_closeC);
+        sound_setC = new Other();
+        QPixmap s_setC;
+        s_setC.load(":image/img/sound_setting.png");
+        sound_setC->setPixmap(s_setC);
+        if(sound_checkC)
+        {
+            sound_setC->setPos(430,130);
+        }
+        else
+        {
+            sound_setC->setPos(530,130);
+        }
+        addItem(sound_setC);
     }
     else if(mode == "play")
     {
@@ -451,17 +662,18 @@ void Scene::bgChange(QString mode)
     {
         QImage bg;
         bg.load(":image/img/bg_exit.png");
-        //bg = bg.scaled(870,550);
         this->setBackgroundBrush(bg);
-        /* second , remove btn - start and change ball */
+
         removeItem(btn_start);
         removeItem(btn_exit);
         removeItem(btn_face);
         removeItem(btn_teach);
+        removeItem(btn_setting);
         delete btn_start;
         delete btn_exit;
         delete btn_face;
         delete btn_teach;
+        delete btn_setting;
         btn_yes = new Btn();
         QPixmap yes;
         yes.load(":image/img/btn_yes.png");

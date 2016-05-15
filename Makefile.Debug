@@ -126,12 +126,14 @@ debug/qrc_resource.cpp: resource.qrc \
 		img/head_timeRemain.png \
 		img/btn_back.png \
 		img/num_3.png \
+		img/btn_setting.png \
 		img/award_F.png \
 		img/btn_exit.png \
 		img/btn_start.png \
 		img/bg_score.png \
 		img/num_2.png \
 		img/drum_red_left.png \
+		img/bg_setting.png \
 		img/bg_play.png \
 		img/hit_r.png \
 		img/num_1.png \
@@ -148,9 +150,11 @@ debug/qrc_resource.cpp: resource.qrc \
 		img/btn_retry.png \
 		img/icon.png \
 		img/drum_red_right.png \
+		img/btn_close.png \
 		img/award_B.png \
 		img/num_8.png \
 		img/award_SS.png \
+		img/sound_setting.png \
 		img/award_A.png \
 		img/num_7.png \
 		img/btn_no.png \
@@ -169,6 +173,7 @@ debug/qrc_resource.cpp: resource.qrc \
 		img/bg_exit.png \
 		img/btn_face.png \
 		img/num_4.png \
+		img/btn_open.png \
 		sound/click.wav \
 		sound/drum_head.wav \
 		sound/meow.wav \

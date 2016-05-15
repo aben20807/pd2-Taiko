@@ -50,6 +50,7 @@
         <file>img/btn_close.png</file>
         <file>img/btn_open.png</file>
         <file>img/btn_setting.png</file>
+        <file>img/sound_setting.png</file>
     </qresource>
     <qresource prefix="/sound">
         <file>sound/click.wav</file>

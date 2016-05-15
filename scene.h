@@ -44,12 +44,23 @@ public:
     Btn *btn_exit;
     Btn *btn_face;
     Btn *btn_teach;
+    Btn *btn_setting;
     bool face_check;
     int face_count;
     int btn_w;
     int btn_h;
     int btn_face_w;
     int btn_face_h;
+
+    //setting
+    Btn *btn_open;
+    Btn *btn_close;
+    Btn *btn_openC;
+    Btn *btn_closeC;
+    Other *sound_setD;//for drum sound
+    Other *sound_setC;//for click sound
+    bool sound_checkD;
+    bool sound_checkC;
 
     //play
     Btn *btn_pause;
