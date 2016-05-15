@@ -1,6 +1,8 @@
 Mainly use for school project, without commercial purpose.<br>
-created by Huang Po-Hsuan<br>
+created by Huang Po-Hsuan(黃柏瑄)<br>
 Original game: 太鼓之達人系列, owned by 南夢宮萬代<br>
+UML class diagram and screen shots are in the "report" folder<br>
+How to play is in the 教學畫面<br>
 <br>
 screenshot:<br>
 1.起始畫面:<br>
