@@ -93,7 +93,7 @@ public:
     int btn_yes_h;
 
     //pause
-    Btn *btn_conti;
+    //Btn *btn_conti;
     Btn *btn_back;
     Btn *btn_retry;
     int btn_conti_w;
@@ -140,7 +140,7 @@ public:
     Other *award_SS;
 
     //For sound
-    QSound *bgm;
+    //QSound *bgm;
     QSound *click;
     QSound *meow;
     QSound *drum_head;
