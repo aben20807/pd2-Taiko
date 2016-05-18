@@ -271,6 +271,7 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             {
                 this->removeItem(i);
                 list.removeOne(i);
+                delete i;
             }
             removeItem(btn_back);
             //removeItem(btn_conti);
@@ -314,6 +315,7 @@ void Scene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             {
                 this->removeItem(i);
                 list.removeOne(i);
+                delete i;
             }
             removeItem(btn_back);
             //removeItem(btn_conti);
@@ -486,6 +488,7 @@ void Scene::bgChange(QString mode)
         {
             this->removeItem(i);
             list.removeOne(i);
+            delete i;
         }
         bgChange("start");
     }
@@ -764,6 +767,7 @@ void Scene::bgChange(QString mode)
         {
             this->removeItem(i);
             list.removeOne(i);
+            delete i;
         }
         displatAward(score_count);
         //retry
