@@ -871,7 +871,10 @@ void Scene::displayCountDown()
     }
     switch (time_count%10) {//個位數
     case 0:
-        removeItem(num_1);
+        if(num_1->isActive())
+        {
+            removeItem(num_1);
+        }
         num_0->setPos(205,40);
         addItem(num_0);
         break;
@@ -964,7 +967,10 @@ void Scene::displayScore()
     }
     switch (score_count%10) {//個位數
     case 0:
-        removeItem(num_9s);
+        if(num_9->isActive())
+        {
+            removeItem(num_9s);
+        }
         num_0s->setPos(750,40);
         addItem(num_0s);
         break;
